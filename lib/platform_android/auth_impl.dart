@@ -4,7 +4,6 @@ import 'package:registration_client/pigeon/auth_response_pigeon.dart';
 import 'package:registration_client/pigeon/user_pigeon.dart';
 
 import 'package:registration_client/platform_spi/auth.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthImpl implements Auth {
 

@@ -136,23 +136,18 @@ public class AuthenticationApi implements AuthResponsePigeon.AuthResponseApi {
         }
 
         try {
-            String token = loginService.saveAuthTokenOffline(username);
-            if(token != null && !token.isEmpty()) {
+            String token = loginService.saveUserAuthTokenOffline(username);
                 AuthResponsePigeon.AuthResponse authResponse = new AuthResponsePigeon.AuthResponse.Builder()
-                        .setResponse(loginService.getAuthToken())
+                        .setResponse(token)
                         .setUsername(sharedPreferences.getString(USER_NAME, null))
                         .setIsDefault(sharedPreferences.getBoolean(IS_DEFAULT, false))
                         .setIsOfficer(sharedPreferences.getBoolean(IS_OPERATOR, false))
                         .setIsSupervisor(sharedPreferences.getBoolean(IS_SUPERVISOR, false))
                         .build();
                 result.success(authResponse);
-            } else {
-                AuthResponsePigeon.AuthResponse authResponse = getAuthErrorResponse("REG_CRED_EXPIRED");
-                result.success(authResponse);
-            }
         } catch (Exception ex) {
-            Log.e(getClass().getSimpleName(), "Some error occurred!");
-            result.error(ex);
+            AuthResponsePigeon.AuthResponse authResponse = getAuthErrorResponse("REG_CRED_EXPIRED");
+            result.success(authResponse);
         }
 
     }

@@ -1,9 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:registration_client/model/process.dart';
 import 'package:registration_client/pigeon/common_details_pigeon.dart';
-import 'package:registration_client/platform_android/machine_key_impl.dart';
 import 'package:registration_client/platform_spi/machine_key.dart';
-import 'package:registration_client/ui/process_ui/new_process.dart';
 
 class GlobalProvider with ChangeNotifier {
   final MachineKey machineKey = MachineKey();
