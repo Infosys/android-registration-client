@@ -83,6 +83,7 @@ class _NewProcessState extends State<NewProcess> {
     await context
         .read<AuthProvider>()
         .authenticatePacket(username, password, isConnected);
+    if(!mounted) return;
     bool isPacketAuthenticated =
         context.read<AuthProvider>().isPacketAuthenticated;
 
@@ -158,11 +159,11 @@ class _NewProcessState extends State<NewProcess> {
     return true;
   }
 
-  _onTabBackNavigate(int index, BuildContext context) {
-    if (index < context.read<GlobalProvider>().newProcessTabIndex) {
-      context.read<GlobalProvider>().newProcessTabIndex = index;
-    }
-  }
+  // _onTabBackNavigate(int index, BuildContext context) {
+  //   if (index < context.read<GlobalProvider>().newProcessTabIndex) {
+  //     context.read<GlobalProvider>().newProcessTabIndex = index;
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -300,6 +301,7 @@ class _NewProcessState extends State<NewProcess> {
         if (context.read<GlobalProvider>().formKey.currentState!.validate()) {
           bool customValidator = await customValidation(
               context.read<GlobalProvider>().newProcessTabIndex);
+          if(!mounted) return;
           if (customValidator) {
             if (context.read<GlobalProvider>().newProcessTabIndex ==
                 newProcess.screens!.length - 1) {
@@ -317,8 +319,10 @@ class _NewProcessState extends State<NewProcess> {
           if (!isPacketAuthenticated) {
             return;
           }
+          if(!mounted) return;
           RegistrationSubmitResponse registrationSubmitResponse =
               await _submitRegistration(context);
+            if(!mounted) return;
           if (registrationSubmitResponse.errorCode!.isNotEmpty) {
             _showInSnackBar(registrationSubmitResponse.errorCode!);
             return;
@@ -331,6 +335,7 @@ class _NewProcessState extends State<NewProcess> {
             password = '';
           });
         }
+        if(!mounted) return;
         if (context.read<GlobalProvider>().newProcessTabIndex == size + 2) {
           Navigator.of(context).pop();
           context.read<GlobalProvider>().newProcessTabIndex = 0;
@@ -422,8 +427,8 @@ class _NewProcessState extends State<NewProcess> {
             children: [
               isMobile
                   ? const SizedBox()
-                  : const Column(
-                      children: [
+                  : Column(
+                      children: const [
                         TabletHeader(),
                         TabletNavbar(),
                       ],

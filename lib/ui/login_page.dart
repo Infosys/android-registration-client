@@ -145,6 +145,7 @@ class _LoginPageState extends State<LoginPage> {
 
     String langCode = context.read<AppLanguageProvider>().selectedLanguage;
     await context.read<AuthProvider>().validateUser(username, langCode);
+    if(!mounted) return;
     bool isValid = context.read<AuthProvider>().isValidUser;
     if (!isValid) {
       _showInSnackBar(AppLocalizations.of(context)!.username_incorrect);
@@ -192,6 +193,8 @@ class _LoginPageState extends State<LoginPage> {
     await context
         .read<AuthProvider>()
         .authenticateUser(username, password, isConnected);
+    
+    if(!mounted) return;
 
     bool isTrue = context.read<AuthProvider>().isLoggedIn;
     if (!isTrue) {
@@ -504,6 +507,7 @@ class _LoginPageState extends State<LoginPage> {
       await syncProvider.autoSync(context).then((value) {
         // syncProvider.setIsGlobalSyncInProgress(false);
       });
+      if(!mounted) return;
       showSyncResultDialog(context);
     }
 

@@ -31,6 +31,7 @@ class _LanguageSelectorState extends State<LanguageSelector> {
     }).toList();
     // print(langList);
     await context.read<RegistrationTaskProvider>().startRegistration(langList);
+    if(!mounted) return;
     String registrationStartError =
         context.read<RegistrationTaskProvider>().registrationStartError;
 

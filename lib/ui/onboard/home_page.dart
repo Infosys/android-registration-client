@@ -42,12 +42,15 @@ class _HomePageState extends State<HomePage> {
   void syncData(BuildContext context) async {
     // await SyncProvider().autoSync(context);
     await _masterDataSync();
+    if(!mounted) return;
     await _getNewProcessSpecAction(context);
+    if(!mounted) return;
     await _getCenterNameAction(context);
   }
 
   void _fetchProcessSpec() async {
     await _getNewProcessSpecAction(context);
+    if(!mounted) return;
     await _getCenterNameAction(context);
   }
 

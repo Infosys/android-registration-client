@@ -9,7 +9,7 @@ class PreviewPage extends StatefulWidget {
   const PreviewPage({super.key});
 
   @override
-  _PreviewPageState createState() => _PreviewPageState();
+  State<PreviewPage> createState() => _PreviewPageState();
 }
 
 class _PreviewPageState extends State<PreviewPage> {
