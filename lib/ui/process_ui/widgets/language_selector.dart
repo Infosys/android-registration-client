@@ -49,7 +49,7 @@ class _LanguageSelectorState extends State<LanguageSelector> {
       return context.read<GlobalProvider>().langToCode(e) as String;
     }).toList();
     // print(langList);
-    await context.read<RegistrationTaskProvider>().startRegistration(langList);
+    await context.read<RegistrationTaskProvider>().startRegistration(["eng"]);
     String registrationStartError = _getRegistrationError();
     _navigateBack();
     if (registrationStartError.isEmpty) {
@@ -245,12 +245,12 @@ class _LanguageSelectorState extends State<LanguageSelector> {
             Expanded(
               child: ElevatedButton(
                 onPressed: () {
-                  if (context.read<GlobalProvider>().chosenLang.length >=
-                          minLanguage &&
-                      context.read<GlobalProvider>().chosenLang.length <=
-                          maxLanguage) {
+                  // if (context.read<GlobalProvider>().chosenLang.length >=
+                  //         minLanguage &&
+                  //     context.read<GlobalProvider>().chosenLang.length <=
+                  //         maxLanguage) {
                     _navigateToConsentPage();
-                  }
+                  // }
                 },
                 style: ButtonStyle(
                   backgroundColor: (context
