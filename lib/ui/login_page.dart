@@ -71,6 +71,7 @@ class _LoginPageState extends State<LoginPage> {
     await _saveVersionToGlobalParam();
     await _initializeMachineData();
     await _initializeAppLanguageData();
+    await _initializeLocationHierarchy();
     await _loginPageLoadedAudit();
   }
 
@@ -91,6 +92,10 @@ class _LoginPageState extends State<LoginPage> {
 
   _initializeAppLanguageData() async {
     await context.read<GlobalProvider>().initializeLanguageDataList();
+  }
+
+  _initializeLocationHierarchy() async {
+    await context.read<GlobalProvider>().initializeLocationHierarchyMap();
   }
 
   _loginPageLoadedAudit() async {

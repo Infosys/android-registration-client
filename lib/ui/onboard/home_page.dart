@@ -64,6 +64,7 @@ class _HomePageState extends State<HomePage> {
     await _getNewProcessSpecAction();
     await _getCenterNameAction();
     await _initializeLanguageDataList();
+    await _initializeLocationHierarchy();
   }
 
   void _fetchProcessSpec() async {
@@ -74,6 +75,10 @@ class _HomePageState extends State<HomePage> {
 
   _initializeLanguageDataList() async {
     await context.read<GlobalProvider>().initializeLanguageDataList();
+  }
+  
+  _initializeLocationHierarchy() async {
+    await context.read<GlobalProvider>().initializeLocationHierarchyMap();
   }
 
   _homePageLoadedAudit() async {

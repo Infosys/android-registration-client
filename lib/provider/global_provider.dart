@@ -582,4 +582,20 @@ class GlobalProvider with ChangeNotifier {
   getAudit(String id, String componentId) async {
     await audit.performAudit(id, componentId);
   }
+
+  Map<String?, String?> _locationHierarchyMap = {};
+
+  Map<String?, String?> get locationHierarchyMap => _locationHierarchyMap;
+
+  setLocationHierarchyMap(Map<String, String> value) {
+    _locationHierarchyMap = value;
+    notifyListeners();
+  }
+
+  initializeLocationHierarchyMap() async {
+    Map<String?, String?> hierarchyMap = await dynamicResponseService.fetchLocationHierarchyMap();
+    log("hierarchyMap $hierarchyMap");
+    _locationHierarchyMap = hierarchyMap;
+    notifyListeners();
+  }
 }

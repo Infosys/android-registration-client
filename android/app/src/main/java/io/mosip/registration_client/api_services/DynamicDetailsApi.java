@@ -7,13 +7,17 @@ import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import io.mosip.registration.clientmanager.dto.registration.GenericValueDto;
 import io.mosip.registration.clientmanager.entity.Language;
+import io.mosip.registration.clientmanager.entity.Location;
+import io.mosip.registration.clientmanager.entity.LocationHierarchy;
 import io.mosip.registration.clientmanager.spi.AuditManagerService;
 import io.mosip.registration.clientmanager.spi.MasterDataService;
 import io.mosip.registration_client.model.DynamicResponsePigeon;
@@ -116,5 +120,22 @@ public class DynamicDetailsApi implements DynamicResponsePigeon.DynamicResponseA
             Log.e(getClass().getSimpleName(), "Fetch language values failed: " + Arrays.toString(e.getStackTrace()));
         }
         result.success(languageDataList);
+    }
+
+    @Override
+    public void getLocationHierarchyMap(@NonNull DynamicResponsePigeon.Result<Map<String, String>> result) {
+        Map<String, String> hierarchyMap = new HashMap<>();
+        try {
+            List<Location> locationList = this.masterDataService.findAllLocationsByLangCode("eng");
+            locationList.forEach((locationHierarchy) -> {
+                String levelName = locationHierarchy.getHierarchyName();
+                int level = locationHierarchy.getHierarchyLevel();
+                hierarchyMap.put(""+level, levelName);
+            });
+            Log.e(getClass().getSimpleName(), "hierarchyMap: " + hierarchyMap);
+        } catch (Exception e) {
+            Log.e(getClass().getSimpleName(), "Fetch location hierarchy map failed: " + Arrays.toString(e.getStackTrace()));
+        }
+        result.success(hierarchyMap);
     }
 }

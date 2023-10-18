@@ -17,6 +17,8 @@ import io.mosip.registration.clientmanager.entity.FileSignature;
 import io.mosip.registration.clientmanager.entity.GlobalParam;
 import io.mosip.registration.clientmanager.dto.registration.GenericValueDto;
 import io.mosip.registration.clientmanager.entity.Language;
+import io.mosip.registration.clientmanager.entity.Location;
+import io.mosip.registration.clientmanager.entity.LocationHierarchy;
 import io.mosip.registration.clientmanager.entity.MachineMaster;
 import io.mosip.registration.clientmanager.entity.RegistrationCenter;
 import io.mosip.registration.clientmanager.entity.SyncJobDef;
@@ -791,6 +793,11 @@ public class MasterDataServiceImpl implements MasterDataService {
     @Override
     public void saveGlobalParam(String id, String value) {
         globalParamRepository.saveGlobalParam(id, value);
+    }
+
+    @Override
+    public List<Location> findAllLocationsByLangCode(String langCode) {
+        return locationRepository.findAllLocationsByLangCode(langCode);
     }
 
 

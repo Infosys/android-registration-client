@@ -7,6 +7,7 @@ import androidx.room.Query;
 import io.mosip.registration.clientmanager.dto.registration.GenericDto;
 import io.mosip.registration.clientmanager.dto.registration.GenericValueDto;
 import io.mosip.registration.clientmanager.entity.Location;
+import io.mosip.registration.clientmanager.entity.LocationHierarchy;
 
 import java.util.List;
 
@@ -24,6 +25,9 @@ public interface LocationDao {
 
     @Query("select name, code, lang_code from location where code = :locCode and is_active=1")
     List<GenericValueDto> findAllLocationByCode(String locCode);
+
+    @Query("select * from location where lang_code=:langCode and is_active=1")
+    List<Location> findAllLocationsByLangCode(String langCode);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(Location location);

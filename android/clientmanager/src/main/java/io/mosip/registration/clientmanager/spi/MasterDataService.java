@@ -4,6 +4,8 @@ import io.mosip.registration.clientmanager.dto.CenterMachineDto;
 import io.mosip.registration.clientmanager.dto.registration.GenericDto;
 import io.mosip.registration.clientmanager.dto.registration.GenericValueDto;
 import io.mosip.registration.clientmanager.entity.Language;
+import io.mosip.registration.clientmanager.entity.Location;
+import io.mosip.registration.clientmanager.entity.LocationHierarchy;
 
 import java.util.List;
 
@@ -130,4 +132,6 @@ public interface MasterDataService {
     List<Language> getAllLanguages();
 
     void saveGlobalParam(String id, String value);
+
+    List<Location> findAllLocationsByLangCode(String langCode);
 }
