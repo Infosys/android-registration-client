@@ -65,7 +65,7 @@ class GlobalProvider with ChangeNotifier {
   String _regId = "";
   String _ageGroup = "";
 
-  List<String?> _locationHierarchy = [null, null, null, null, null];
+  List<String?> _locationHierarchy = [];
 
   //GettersSetters
   setScannedPages(String field, List<Uint8List?> value) {
@@ -584,11 +584,32 @@ class GlobalProvider with ChangeNotifier {
   }
 
   Map<String?, String?> _locationHierarchyMap = {};
+  Map<int, String?> _hierarchyCodeMap = {};
 
   Map<String?, String?> get locationHierarchyMap => _locationHierarchyMap;
+  Map<int, String?> get hierarchyCodeMap => _hierarchyCodeMap;
+  
+  int _minIndex = 100;
+  
+  int get minIndex => _minIndex;
+
+  setMinIndex(int value) {
+    _minIndex = value;
+    notifyListeners();
+  }
 
   setLocationHierarchyMap(Map<String, String> value) {
     _locationHierarchyMap = value;
+    notifyListeners();
+  }
+
+  setHierarchyCodeMap(Map<int, String?> value) {
+    _hierarchyCodeMap = value;
+    notifyListeners();
+  }
+
+  setCodeValue(int key, String? code) {
+    hierarchyCodeMap[key] = code;
     notifyListeners();
   }
 
@@ -596,6 +617,27 @@ class GlobalProvider with ChangeNotifier {
     Map<String?, String?> hierarchyMap = await dynamicResponseService.fetchLocationHierarchyMap();
     log("hierarchyMap $hierarchyMap");
     _locationHierarchyMap = hierarchyMap;
+    List<String?> hValues = [];
+    _locationHierarchyMap.forEach((key, value) {
+      hValues.add(null);
+    });
+    _locationHierarchy = hValues;
     notifyListeners();
+  }
+
+  getLocationHierarchyReverseMap() {
+    Map<String, int> map = {};
+    _locationHierarchyMap.forEach((key, value) { 
+      map[value!] = int.parse(key!);
+    });
+    return map; 
+  }
+
+  getLocationHierarchyList() {
+    List<String> list = [];
+    _locationHierarchyMap.forEach((key, value) { 
+      list.add(value!);
+    });
+    return list;
   }
 }

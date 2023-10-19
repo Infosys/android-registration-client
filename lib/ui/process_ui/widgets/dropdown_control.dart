@@ -1,4 +1,5 @@
-import 'dart:developer';
+import 'dart:developer' as logger;
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 
@@ -29,26 +30,35 @@ class _CustomDropDownState extends State<DropDownControl> {
   GenericData? selected;
 
   List<String> hierarchyReverse = [
-    "region",
-    "province",
-    "city",
-    "zone",
-    "postalCode"
+    
   ];
+  Map<String, int> hierarchyReverseMap = {};
   int? index;
   List<GenericData?> list = [];
 
   @override
   void initState() {
+    setHierarchyReverse();
     super.initState();
+  }
+
+  setHierarchyReverse() {
+    hierarchyReverseMap = context.read<GlobalProvider>().getLocationHierarchyReverseMap();
+    hierarchyReverse = context.read<GlobalProvider>().getLocationHierarchyList();
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     setState(() {
-      index = hierarchyReverse.indexOf(widget.field.id!);
+      index = hierarchyReverseMap[widget.field.subType]!;
     });
+    // context.read<GlobalProvider>().setCodeValue(index!, null);
+    // log('codemap: ${context.read<GlobalProvider>().hierarchyCodeMap}');
+    int minIndex = context.read<GlobalProvider>().minIndex;
+    minIndex = min(minIndex, index!);
+    context.read<GlobalProvider>().setMinIndex(minIndex);
+    logger.log("min index: $minIndex");
     _getOptionsList();
   }
 
@@ -144,7 +154,7 @@ class _CustomDropDownState extends State<DropDownControl> {
 
   _getOptionsList() async {
     List<GenericData?> temp;
-    if (index == 0) {
+    if (index == context.read<GlobalProvider>().minIndex) {
       temp = await _getLocationValues(widget.field.subType!, "eng");
     } else {
       var parentCode =
@@ -225,7 +235,7 @@ class _CustomDropDownState extends State<DropDownControl> {
                         .setLocationHierarchy(value.code, index!);
                     _getSelectedValueFromMap("eng", list);
                   }
-                  log(context
+                  debugPrint(context
                       .read<GlobalProvider>()
                       .locationHierarchy
                       .toString());

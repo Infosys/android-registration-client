@@ -67,8 +67,8 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   _initializeAppData() async {
-    await _setVersionNoApp();
-    await _saveVersionToGlobalParam();
+    // await _setVersionNoApp();
+    // await _saveVersionToGlobalParam();
     await _initializeMachineData();
     await _initializeAppLanguageData();
     await _initializeLocationHierarchy();
