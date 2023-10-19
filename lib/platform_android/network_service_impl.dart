@@ -27,11 +27,17 @@ class NetworkServiceImpl implements NetworkService {
   Future<String> getVersionNoApp() async {
     String versionInfo = '';
     try {
-      final response = await http.get(Uri.parse(FlutterConfig.get('BASE_URL') +
-          FlutterConfig.get('ACTUATOR_INFO_PATH')));
-      ActuatorInfo actuatorInfo =
-          ActuatorInfo.fromJson(jsonDecode(response.body));
-      versionInfo = actuatorInfo.build['version']!;
+      final response = await http
+          .get(Uri.parse(FlutterConfig.get('BASE_URL') +
+              FlutterConfig.get('ACTUATOR_INFO_PATH')))
+          .timeout(const Duration(seconds: 3));
+      if (response.statusCode == 200) {
+        ActuatorInfo actuatorInfo =
+            ActuatorInfo.fromJson(jsonDecode(response.body));
+        versionInfo = actuatorInfo.build['version']!;
+      } else {
+        debugPrint('Timeout!');
+      }
     } catch (e) {
       debugPrint("Fetch actuator info failed $e");
     }

@@ -1,4 +1,3 @@
-import 'dart:developer' as logger;
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -53,8 +52,6 @@ class _CustomDropDownState extends State<DropDownControl> {
     setState(() {
       index = hierarchyReverseMap[widget.field.subType]!;
     });
-    // context.read<GlobalProvider>().setCodeValue(index!, null);
-    // log('codemap: ${context.read<GlobalProvider>().hierarchyCodeMap}');
     _getMinIndex();
     _getOptionsList();
   }
@@ -63,7 +60,6 @@ class _CustomDropDownState extends State<DropDownControl> {
     int minIndex = context.read<GlobalProvider>().minIndex;
     minIndex = min(minIndex, index!);
     context.read<GlobalProvider>().setMinIndex(minIndex);
-    logger.log("min index: $minIndex");
   }
 
   void saveData(value) {
@@ -239,10 +235,6 @@ class _CustomDropDownState extends State<DropDownControl> {
                         .setLocationHierarchy(value.code, index!);
                     _getSelectedValueFromMap("eng", list);
                   }
-                  debugPrint(context
-                      .read<GlobalProvider>()
-                      .locationHierarchy
-                      .toString());
                 },
               ),
             ],

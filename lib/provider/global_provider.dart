@@ -615,7 +615,6 @@ class GlobalProvider with ChangeNotifier {
 
   initializeLocationHierarchyMap() async {
     Map<String?, String?> hierarchyMap = await dynamicResponseService.fetchLocationHierarchyMap();
-    log("hierarchyMap $hierarchyMap");
     _locationHierarchyMap = hierarchyMap;
     List<String?> hValues = [];
     _locationHierarchyMap.forEach((key, value) {

@@ -132,7 +132,6 @@ public class DynamicDetailsApi implements DynamicResponsePigeon.DynamicResponseA
                 int level = locationHierarchy.getHierarchyLevel();
                 hierarchyMap.put(""+level, levelName);
             });
-            Log.e(getClass().getSimpleName(), "hierarchyMap: " + hierarchyMap);
         } catch (Exception e) {
             Log.e(getClass().getSimpleName(), "Fetch location hierarchy map failed: " + Arrays.toString(e.getStackTrace()));
         }
