@@ -55,11 +55,15 @@ class _CustomDropDownState extends State<DropDownControl> {
     });
     // context.read<GlobalProvider>().setCodeValue(index!, null);
     // log('codemap: ${context.read<GlobalProvider>().hierarchyCodeMap}');
+    _getMinIndex();
+    _getOptionsList();
+  }
+
+  _getMinIndex() {
     int minIndex = context.read<GlobalProvider>().minIndex;
     minIndex = min(minIndex, index!);
     context.read<GlobalProvider>().setMinIndex(minIndex);
     logger.log("min index: $minIndex");
-    _getOptionsList();
   }
 
   void saveData(value) {
@@ -91,14 +95,14 @@ class _CustomDropDownState extends State<DropDownControl> {
     if (value != null) {
       if (widget.field.type == 'simpleType') {
         context.read<GlobalProvider>().setLanguageSpecificValue(
-              widget.field.id ?? "",
+              widget.field.subType ?? "",
               value,
               "eng",
               context.read<GlobalProvider>().fieldInputValue,
             );
       } else {
         context.read<GlobalProvider>().setInputMapValue(
-              widget.field.id ?? "",
+              widget.field.subType ?? "",
               value,
               context.read<GlobalProvider>().fieldInputValue,
             );
@@ -109,17 +113,17 @@ class _CustomDropDownState extends State<DropDownControl> {
   void _getSelectedValueFromMap(String lang, List<GenericData?> list) {
     GenericData? response;
     if (widget.field.type == 'simpleType') {
-      if ((context.read<GlobalProvider>().fieldInputValue[widget.field.id ?? ""]
+      if ((context.read<GlobalProvider>().fieldInputValue[widget.field.subType ?? ""]
               as Map<String, dynamic>)
           .containsKey(lang)) {
         response = context
             .read<GlobalProvider>()
-            .fieldInputValue[widget.field.id ?? ""][lang] as GenericData;
+            .fieldInputValue[widget.field.subType ?? ""][lang] as GenericData;
       }
     } else {
       response = context
           .read<GlobalProvider>()
-          .fieldInputValue[widget.field.id ?? ""] as GenericData;
+          .fieldInputValue[widget.field.subType ?? ""] as GenericData;
     }
     setState(() {
       for (var element in list) {
@@ -149,7 +153,7 @@ class _CustomDropDownState extends State<DropDownControl> {
     return context
         .read<GlobalProvider>()
         .fieldInputValue
-        .containsKey(widget.field.id ?? "");
+        .containsKey(widget.field.subType ?? "");
   }
 
   _getOptionsList() async {

@@ -11,10 +11,10 @@ import 'package:http/http.dart' as http;
 class NetworkServiceImpl implements NetworkService {
   @override
   Future<String> checkInternetConnection() async {
-
     try {
-      final response = await http.get(Uri.parse(
-          FlutterConfig.get('BASE_URL') + FlutterConfig.get('HEALTH_CHECK_PATH')))
+      final response = await http
+          .get(Uri.parse(FlutterConfig.get('BASE_URL') +
+              FlutterConfig.get('HEALTH_CHECK_PATH')))
           .timeout(const Duration(seconds: 2));
       return response.statusCode.toString();
     } catch (e) {
@@ -25,11 +25,12 @@ class NetworkServiceImpl implements NetworkService {
 
   @override
   Future<String> getVersionNoApp() async {
-   String versionInfo = '';
+    String versionInfo = '';
     try {
-      final response = await http.get(Uri.parse(
-          FlutterConfig.get('BASE_URL') + FlutterConfig.get('ACTUATOR_INFO_PATH')));
-          ActuatorInfo actuatorInfo = ActuatorInfo.fromJson(jsonDecode(response.body));
+      final response = await http.get(Uri.parse(FlutterConfig.get('BASE_URL') +
+          FlutterConfig.get('ACTUATOR_INFO_PATH')));
+      ActuatorInfo actuatorInfo =
+          ActuatorInfo.fromJson(jsonDecode(response.body));
       versionInfo = actuatorInfo.build['version']!;
     } catch (e) {
       debugPrint("Fetch actuator info failed $e");
