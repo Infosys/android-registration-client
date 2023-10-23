@@ -763,11 +763,10 @@ public class MasterDataServiceImpl implements MasterDataService {
     }
 
     @Override
-    public List<GenericValueDto> findLocationByHierarchyLevel(String hierarchyLevelName, String langCode) {
-        Integer level = getHierarchyLevel(hierarchyLevelName);
-        if (level == null)
-            return Collections.EMPTY_LIST;
-        return this.locationRepository.getLocationsBasedOnHierarchyLevel(level, langCode);
+    public List<GenericValueDto> findLocationByHierarchyLevel(int hierarchyLevel, String langCode) {
+//        if (level == null)
+//            return Collections.EMPTY_LIST;
+        return this.locationRepository.getLocationsBasedOnHierarchyLevel(hierarchyLevel, langCode);
     }
 
     @Override

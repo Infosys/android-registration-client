@@ -52,8 +52,8 @@ public class DynamicDetailsApi implements DynamicResponsePigeon.DynamicResponseA
     public void getLocationValues(@NonNull String hierarchyLevelName, @NonNull String langCode, @NonNull DynamicResponsePigeon.Result<List<DynamicResponsePigeon.GenericData>> result) {
         List<DynamicResponsePigeon.GenericData> locationList = new ArrayList<>();
         try {
-            int hierarchyLevel = this.masterDataService.getHierarchyLevel(hierarchyLevelName);
-            List<GenericValueDto> genericValueList = this.masterDataService.findLocationByHierarchyLevel(hierarchyLevelName, langCode);
+            int hierarchyLevel = Integer.parseInt(hierarchyLevelName);
+            List<GenericValueDto> genericValueList = this.masterDataService.findLocationByHierarchyLevel(hierarchyLevel, langCode);
             genericValueList.forEach((v) -> {
                 DynamicResponsePigeon.GenericData location = new DynamicResponsePigeon.GenericData.Builder()
                         .setCode(v.getCode())
@@ -86,19 +86,18 @@ public class DynamicDetailsApi implements DynamicResponsePigeon.DynamicResponseA
     public void getLocationValuesBasedOnParent(@Nullable String parentCode, @NonNull String hierarchyLevelName, @NonNull String langCode, @NonNull DynamicResponsePigeon.Result<List<DynamicResponsePigeon.GenericData>> result) {
         List<DynamicResponsePigeon.GenericData> locationList = new ArrayList<>();
         try {
-            int hierarchyLevel = this.masterDataService.getHierarchyLevel(hierarchyLevelName);
             List<GenericValueDto> genericValueList = this.masterDataService.findLocationByParentHierarchyCode(parentCode, langCode);
             genericValueList.forEach((v) -> {
                 DynamicResponsePigeon.GenericData location = new DynamicResponsePigeon.GenericData.Builder()
                         .setCode(v.getCode())
                         .setName(v.getName())
                         .setLangCode(v.getLangCode())
-                        .setHierarchyLevel((long) hierarchyLevel)
+                        .setHierarchyLevel((long) 0)
                         .build();
                 locationList.add(location);
             });
         } catch (Exception e) {
-            Log.e(getClass().getSimpleName(), "Fetch location values: " + Arrays.toString(e.getStackTrace()));
+            Log.e(getClass().getSimpleName(), "Fetch location values based on parent failed: " + Arrays.toString(e.getStackTrace()));
         }
         result.success(locationList);
     }

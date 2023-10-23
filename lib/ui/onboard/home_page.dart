@@ -62,6 +62,7 @@ class _HomePageState extends State<HomePage> {
     }
     await _masterDataSync();
     await _getNewProcessSpecAction();
+    Clipboard.setData(ClipboardData(text: context.read<RegistrationTaskProvider>().listOfProcesses.toString()));
     await _getCenterNameAction();
     await _initializeLanguageDataList();
     await _initializeLocationHierarchy();
@@ -112,6 +113,13 @@ class _HomePageState extends State<HomePage> {
       context.read<GlobalProvider>().htmlBoxTabIndex = 0;
       context.read<GlobalProvider>().setRegId("");
       context.read<GlobalProvider>().createRegistrationLanguageMap();
+      for(var screen in process.screens!) {
+        for(var field in screen!.fields!) {
+          if(field!.controlType == 'dropdown' && field.fieldType == 'default') {
+            context.read<GlobalProvider>().initializeGroupedHierarchyMap(field.group!);
+          }
+        }
+      }
       showDialog(
         context: context,
         builder: (BuildContext context) => LanguageSelector(

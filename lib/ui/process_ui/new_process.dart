@@ -250,7 +250,11 @@ class _NewProcessState extends State<NewProcess> {
               .containsKey(screen.fields!.elementAt(i)!.id)) && !(context
               .read<GlobalProvider>()
               .fieldInputValue
-              .containsKey(screen.fields!.elementAt(i)!.subType))) {
+              .containsKey(screen.fields!.elementAt(i)!.subType)) && 
+              !(context
+              .read<GlobalProvider>()
+              .fieldInputValue
+              .containsKey("${screen.fields!.elementAt(i)!.group}${screen.fields!.elementAt(i)!.subType}"))) {
             isValid = false;
 
             break;
