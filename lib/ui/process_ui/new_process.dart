@@ -351,6 +351,10 @@ class _NewProcessState extends State<NewProcess> with WidgetsBindingObserver {
 
     customValidation(int currentIndex) async {
       bool isValid = true;
+      if(currentIndex>=newProcess.screens!.length)
+      {
+        return true;
+      }
       Screen screen = newProcess.screens!.elementAt(currentIndex)!;
       for (int i = 0; i < screen.fields!.length; i++) {
         if (screen.fields!.elementAt(i)!.inputRequired! &&
@@ -508,6 +512,7 @@ class _NewProcessState extends State<NewProcess> with WidgetsBindingObserver {
 
     customValidation(globalProvider.newProcessTabIndex).then((value) {
       continueButton = value;
+      setState(() {});
     });
 
     return SafeArea(
