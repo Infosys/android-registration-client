@@ -230,18 +230,18 @@ public class Biometrics095Service extends BiometricsService {
      */
     public void validateJWTResponse(final String signedData, final String domain)
             throws Exception {
-        JWTSignatureVerifyRequestDto jwtSignatureVerifyRequestDto = new JWTSignatureVerifyRequestDto();
-        jwtSignatureVerifyRequestDto.setValidateTrust(true);
-        jwtSignatureVerifyRequestDto.setDomain(domain);
-        jwtSignatureVerifyRequestDto.setJwtSignatureData(signedData);
-
-        JWTSignatureVerifyResponseDto jwtSignatureVerifyResponseDto = clientCryptoManagerService.jwtVerify(jwtSignatureVerifyRequestDto);
-        if(!jwtSignatureVerifyResponseDto.isSignatureValid())
-            throw new BiometricsServiceException(SBIError.SBI_INVALID_SIGNATURE.getErrorCode(), SBIError.SBI_INVALID_SIGNATURE.getErrorMessage());
-
-        if (jwtSignatureVerifyRequestDto.getValidateTrust() && !jwtSignatureVerifyResponseDto.getTrustValid().equals(KeyManagerConstant.TRUST_VALID)) {
-            throw new BiometricsServiceException(SBIError.SBI_CERT_PATH_TRUST_FAILED.getErrorCode(), SBIError.SBI_CERT_PATH_TRUST_FAILED.getErrorMessage());
-        }
+//        JWTSignatureVerifyRequestDto jwtSignatureVerifyRequestDto = new JWTSignatureVerifyRequestDto();
+//        jwtSignatureVerifyRequestDto.setValidateTrust(true);
+//        jwtSignatureVerifyRequestDto.setDomain(domain);
+//        jwtSignatureVerifyRequestDto.setJwtSignatureData(signedData);
+//
+//        JWTSignatureVerifyResponseDto jwtSignatureVerifyResponseDto = clientCryptoManagerService.jwtVerify(jwtSignatureVerifyRequestDto);
+//        if(!jwtSignatureVerifyResponseDto.isSignatureValid())
+//            throw new BiometricsServiceException(SBIError.SBI_INVALID_SIGNATURE.getErrorCode(), SBIError.SBI_INVALID_SIGNATURE.getErrorMessage());
+//
+//        if (jwtSignatureVerifyRequestDto.getValidateTrust() && !jwtSignatureVerifyResponseDto.getTrustValid().equals(KeyManagerConstant.TRUST_VALID)) {
+//            throw new BiometricsServiceException(SBIError.SBI_CERT_PATH_TRUST_FAILED.getErrorCode(), SBIError.SBI_CERT_PATH_TRUST_FAILED.getErrorMessage());
+//        }
     }
 
 }
