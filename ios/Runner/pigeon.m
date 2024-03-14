@@ -195,6 +195,23 @@ void BiometricsApiSetup(id<FlutterBinaryMessenger> binaryMessenger, NSObject<Bio
   {
     FlutterBasicMessageChannel *channel =
       [[FlutterBasicMessageChannel alloc]
+        initWithName:@"dev.flutter.pigeon.registration_client.BiometricsApi.saveOperatorBiometrics"
+        binaryMessenger:binaryMessenger
+        codec:BiometricsApiGetCodec()];
+    if (api) {
+      NSCAssert([api respondsToSelector:@selector(saveOperatorBiometricsWithCompletion:)], @"BiometricsApi api (%@) doesn't respond to @selector(saveOperatorBiometricsWithCompletion:)", api);
+      [channel setMessageHandler:^(id _Nullable message, FlutterReply callback) {
+        [api saveOperatorBiometricsWithCompletion:^(NSString *_Nullable output, FlutterError *_Nullable error) {
+          callback(wrapResult(output, error));
+        }];
+      }];
+    } else {
+      [channel setMessageHandler:nil];
+    }
+  }
+  {
+    FlutterBasicMessageChannel *channel =
+      [[FlutterBasicMessageChannel alloc]
         initWithName:@"dev.flutter.pigeon.registration_client.BiometricsApi.addBioException"
         binaryMessenger:binaryMessenger
         codec:BiometricsApiGetCodec()];

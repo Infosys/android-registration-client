@@ -23,6 +23,7 @@ NSObject<FlutterMessageCodec> *BiometricsApiGetCodec(void);
 - (void)incrementBioAttemptFieldId:(NSString *)fieldId modality:(NSString *)modality completion:(void (^)(NSNumber *_Nullable, FlutterError *_Nullable))completion;
 - (void)getBioAttemptFieldId:(NSString *)fieldId modality:(NSString *)modality completion:(void (^)(NSNumber *_Nullable, FlutterError *_Nullable))completion;
 - (void)startOperatorOnboardingWithCompletion:(void (^)(NSString *_Nullable, FlutterError *_Nullable))completion;
+- (void)saveOperatorBiometricsWithCompletion:(void (^)(NSString *_Nullable, FlutterError *_Nullable))completion;
 - (void)addBioExceptionFieldId:(NSString *)fieldId modality:(NSString *)modality attribute:(NSString *)attribute completion:(void (^)(NSString *_Nullable, FlutterError *_Nullable))completion;
 - (void)removeBioExceptionFieldId:(NSString *)fieldId modality:(NSString *)modality attribute:(NSString *)attribute completion:(void (^)(NSString *_Nullable, FlutterError *_Nullable))completion;
 - (void)getMapValueKey:(NSString *)key completion:(void (^)(NSString *_Nullable, FlutterError *_Nullable))completion;
