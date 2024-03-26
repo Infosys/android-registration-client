@@ -2,11 +2,14 @@ package io.mosip.registration.clientmanager.service;
 
 import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.registration.clientmanager.BuildConfig;
 import io.mosip.registration.clientmanager.constant.ClientManagerError;
 import io.mosip.registration.clientmanager.constant.RegistrationConstants;
+import io.mosip.registration.clientmanager.dto.http.CertificateResponse;
 import io.mosip.registration.clientmanager.dto.http.ResponseWrapper;
 import io.mosip.registration.clientmanager.dto.http.ServiceError;
 import io.mosip.registration.clientmanager.dto.registration.BiometricsDto;
@@ -27,6 +30,7 @@ import io.mosip.registration.packetmanager.util.DateUtils;
 import io.mosip.registration.packetmanager.util.HMACUtils2;
 import lombok.NonNull;
 import retrofit2.Call;
+import retrofit2.Callback;
 import retrofit2.Response;
 
 import javax.crypto.KeyGenerator;
@@ -47,6 +51,8 @@ public class UserOnboardService {
 
     private static final String TAG = UserOnboardService.class.getSimpleName();
     public static final String ON_BOARD_TIME_STAMP = "timestamp";
+
+    public static final String OPERATOR_BIO_KEY = "%s_%s";
     public static final String ON_BOARD_BIOMETRICS = "biometrics";
     public static final String AUTH_HASH = "hash";
     public static String ONBOARD_CERT_THUMBPRINT = "thumbprint";
@@ -95,9 +101,26 @@ public class UserOnboardService {
     private RegistrationService registrationService;
     private UserBiometricRepository userBiometricRepository;
 
-    private Map<String, BiometricsDto> operatorBiometrics;
+    // private Map<String, BiometricsDto> operatorBiometrics;
 
     private static final String BIOMETRIC_KEY_PATTERN = "%s_%s_%s";
+
+    private List<BiometricsDto> operatorBiometrics=new ArrayList<>();
+    public List<BiometricsDto> getOperatorBiometrics(){
+        return operatorBiometrics;
+    }
+
+    private boolean idaResponse;
+
+    public boolean isIdaResponse() {
+        return idaResponse;
+    }
+
+    public void setIdaResponse(boolean idaResponse) {
+        this.idaResponse = idaResponse;
+    }
+
+
 
     @Inject
     public UserOnboardService(Context context, ObjectMapper objectMapper, AuditManagerService auditManagerService,
@@ -113,7 +136,7 @@ public class UserOnboardService {
         this.userBiometricRepository = userBiometricRepository;
     }
 
-    public boolean validateWithIDAuthAndSave(List<BiometricsDto> biometrics) throws ClientCheckedException {
+    public boolean onboardOperator(List<BiometricsDto> biometrics) throws ClientCheckedException {
         Log.i(TAG, "validateWithIDAuthAndSave invoked ");
 
         if (Objects.isNull(biometrics))
@@ -211,6 +234,7 @@ public class UserOnboardService {
     private boolean getIdaAuthResponse(Map<String, Object> idaRequestMap, Map<String, Object> requestMap,
                                                    Certificate certificate) throws ClientCheckedException {
         try {
+
             PublicKey publicKey = certificate.getPublicKey();
             idaRequestMap.put(ONBOARD_CERT_THUMBPRINT, CryptoUtil.encodeToURLSafeBase64(cryptoManagerService.getCertificateThumbprint(certificate)));
 
@@ -233,42 +257,75 @@ public class UserOnboardService {
             idaRequestMap.put(ON_BOARD_REQUEST_SESSION_KEY,
                     CryptoUtil.encodeToURLSafeBase64(cryptoManagerService.asymmetricEncrypt(publicKey, symmentricKey.getEncoded())));
 
-            Call<ResponseWrapper<Map<String, Object>>> call = syncRestService.doOperatorAuth("test-signature",
+            Call<ResponseWrapper<Map<String, Object>>> call = syncRestService.doOperatorAuth("sign",
                     idaRequestMap);
-            Response<ResponseWrapper<Map<String, Object>>> response = call.execute();
-            if (response.isSuccessful()) {
-                ServiceError error = SyncRestUtil.getServiceError(response.body());
-                if (error == null) {
-                    return (Boolean) response.body().getResponse().get(ON_BOARD_AUTH_STATUS);
+
+
+            call.enqueue(new Callback<ResponseWrapper<Map<String, Object>>>() {
+
+                @Override
+                public void onResponse(Call<ResponseWrapper<Map<String, Object>>> call, Response<ResponseWrapper<Map<String, Object>>> response) {
+                    if (response.isSuccessful()) {
+                        ServiceError error = SyncRestUtil.getServiceError(response.body());
+                        if (error.getErrorCode() == null) {
+                            setIdaResponse((Boolean) response.body().getResponse().get(ON_BOARD_AUTH_STATUS));
+                        }
+                    } else{
+                        setIdaResponse(false);
+                        Log.i("Response UserOnboard Service",response.toString());
+                        Toast.makeText(context, "Failed to fetch IDA Response :" + response.code(), Toast.LENGTH_LONG).show();
+                    }
                 }
-            }
+
+
+                @Override
+                public void onFailure(Call<ResponseWrapper<Map<String, Object>>> call, Throwable t) {
+                    t.printStackTrace();
+                    setIdaResponse(false);
+                    Toast.makeText(context, "IDA Response fetch failed", Toast.LENGTH_LONG).show();
+                }
+
+            });
+            return isIdaResponse();
+
         } catch (Exception e) {
             Log.e(TAG, e.getMessage(), e);
             throw new ClientCheckedException("", e.getMessage(), e);
         }
-        return false;
+//        return false;
 
     }
 
-    private String getCertificate() {
+    private String getCertificate() throws IOException {
         String certData = this.certificateManagerService.getCertificate(APPLICATION_ID, REFERENCE_ID);
         if(certData == null) {
             Call<ResponseWrapper<Map<String, Object>>> call = syncRestService.getIDACertificate();
-            try {
-                Response<ResponseWrapper<Map<String, Object>>> response = call.execute();
-                if (response.isSuccessful()) {
-                    ServiceError error = SyncRestUtil.getServiceError(response.body());
-                    if (error == null) {
-                        CertificateRequestDto certificateRequestDto = new CertificateRequestDto();
-                        certificateRequestDto.setApplicationId(APPLICATION_ID);
-                        certificateRequestDto.setReferenceId(REFERENCE_ID);
-                        certificateRequestDto.setCertificateData((String) response.body().getResponse().get(CERTIFICATE));
-                        this.certificateManagerService.uploadOtherDomainCertificate(certificateRequestDto);
+            call.enqueue(new Callback<ResponseWrapper<Map<String, Object>>>() {
+                @Override
+                public void onResponse(Call<ResponseWrapper<Map<String, Object>>> call, Response<ResponseWrapper<Map<String, Object>>> response) {
+                    if (response.isSuccessful()) {
+                        ServiceError error = SyncRestUtil.getServiceError(response.body());
+                        if (error == null) {
+                            CertificateRequestDto certificateRequestDto = new CertificateRequestDto();
+                            certificateRequestDto.setApplicationId(APPLICATION_ID);
+                            certificateRequestDto.setReferenceId(REFERENCE_ID);
+                            certificateRequestDto.setCertificateData((String) response.body().getResponse().get(CERTIFICATE));
+                            certificateManagerService.uploadOtherDomainCertificate(certificateRequestDto);
+
+                        }
+                    } else{
+                        Log.i("Response UserOnboard Service",response.toString());
+                        Toast.makeText(context, "Failed to fetch IDA Internal certificate :" + response.code(), Toast.LENGTH_LONG).show();
                     }
                 }
-            } catch (IOException e) {
-                Log.e(TAG, "Failed to fetch IDA Internal certificate", e);
-            }
+
+                @Override
+                public void onFailure(Call<ResponseWrapper<Map<String, Object>>> call, Throwable t) {
+                    t.printStackTrace();
+                    Toast.makeText(context, "IDA Internal Certificate fetch failed", Toast.LENGTH_LONG).show();
+                }
+            });
+
         }
         return this.certificateManagerService.getCertificate(APPLICATION_ID, REFERENCE_ID);
     }
@@ -438,85 +495,28 @@ public class UserOnboardService {
     }
 
 
-    public void initializeOperatorBiometric() {
-        operatorBiometrics = new HashMap<String, BiometricsDto>();
-    }
 
 
-    public BiometricsDto addOperatorBiometrics(String operatorType, String uiSchemaAttribute, BiometricsDto value) {
-        Log.i(TAG,"addOperatorBiometrics >>> operatorType :: " + operatorType + " bioAttribute :: " + uiSchemaAttribute);
-        operatorBiometrics.put(String.format(BIOMETRIC_KEY_PATTERN, operatorType, uiSchemaAttribute, ""), value);
-        return value;
-    }
 
 
-    public void addOperatorBiometricException(String operatorType, String bioAttribute) {
-        Log.i(TAG, "addOperatorBiometricException >>> operatorType :: " + operatorType + " bioAttribute :: "
-                        + bioAttribute);
-        operatorBiometrics.remove(String.format(BIOMETRIC_KEY_PATTERN, operatorType, bioAttribute, ""));
-        operatorBiometrics.put(String.format(BIOMETRIC_KEY_PATTERN, operatorType, bioAttribute, "exp"), null);
-    }
 
 
-    public void removeOperatorBiometrics(String operatorType, String bioAttribute) {
-        Log.i(TAG, "removeOperatorBiometrics >>>> operatorType :: " + operatorType + " bioAttribute :: " + bioAttribute);
-        operatorBiometrics.remove(String.format(BIOMETRIC_KEY_PATTERN, operatorType, bioAttribute, ""));
-    }
 
 
-    public void removeOperatorBiometricException(String operatorType, String bioAttribute) {
-        Log.i(TAG, "removeOperatorBiometricException >>>>> operatorType :: " + operatorType + " bioAttribute :: "
-                        + bioAttribute);
-        operatorBiometrics.remove(String.format(BIOMETRIC_KEY_PATTERN, operatorType, bioAttribute, "exp"));
-    }
 
 
-    public List<BiometricsDto> getAllBiometrics() {
-        if (Objects.isNull(operatorBiometrics))
-            return null;
-
-        return operatorBiometrics.entrySet().stream().filter(m -> m.getKey().endsWith("_")).map(Map.Entry::getValue)
-                .collect(Collectors.toList());
-    }
 
 
-    public List<BiometricsDto> getAllBiometricExceptions() {
-        if (Objects.isNull(operatorBiometrics))
-            return null;
-
-        return operatorBiometrics.entrySet().stream().filter(m -> m.getKey().endsWith("_exp")).map(Map.Entry::getValue)
-                .collect(Collectors.toList());
-    }
 
 
-    public boolean isBiometricException(String operatorType, String bioAttribute) {
-        if (Objects.isNull(operatorBiometrics))
-            return false;
-
-        Optional<String> result = operatorBiometrics.entrySet().stream()
-                .filter(m -> m.getKey()
-                        .equalsIgnoreCase(String.format(BIOMETRIC_KEY_PATTERN, operatorType, bioAttribute, "exp")))
-                .map(Map.Entry::getKey).findFirst();
-
-        return result.isPresent() ? true : false;
-    }
 
 
-    public List<BiometricsDto> getBiometrics(String operatorType, List<String> attributeNames) {
-        if (Objects.isNull(operatorBiometrics))
-            return null;
 
-        List<BiometricsDto> list = new ArrayList<>();
-        attributeNames.forEach(name -> {
-            Optional<BiometricsDto> result = operatorBiometrics.entrySet().stream()
-                    .filter(m -> m.getKey().equals(String.format(BIOMETRIC_KEY_PATTERN, operatorType, name, "")))
-                    .map(Map.Entry::getValue).findFirst();
 
-            if (result.isPresent())
-                list.add(result.get());
-        });
-        return list;
-    }
+
+
+
+
 
 //    public Timestamp getLastUpdatedTime(String usrId) {
 //        return userOnBoardDao.getLastUpdatedTime(usrId);
