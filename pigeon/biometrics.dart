@@ -25,6 +25,9 @@ abstract class BiometricsApi {
   int getBioAttempt(String fieldId, String modality);
 
   @async
+  int setComment(String fieldId, String modality,String comment);
+
+  @async
   String startOperatorOnboarding();
 
   @async

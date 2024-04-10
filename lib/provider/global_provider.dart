@@ -9,6 +9,7 @@ import 'dart:developer';
 
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:registration_client/model/biometric_comment_data.dart';
 import 'package:registration_client/model/field.dart';
 import 'package:registration_client/model/process.dart';
 import 'package:registration_client/pigeon/biometrics_pigeon.dart';
@@ -48,7 +49,7 @@ class GlobalProvider with ChangeNotifier {
   int _htmlBoxTabIndex = 0;
 
   List<String> _chosenLang = [];
-  String _operatorOnboardingAttributes="";
+  String _operatorOnboardingAttributes = "";
   Map<String, bool> _languageMap = {
     'English': true,
     'Arabic': false,
@@ -64,7 +65,7 @@ class GlobalProvider with ChangeNotifier {
   Map<String, dynamic> _fieldDisplayValues = {};
 
   Map<String, dynamic> _fieldInputValue = {};
-  Map<String,dynamic> _completeException={};
+  Map<String, dynamic> _completeException = {};
 
   Map<String, bool> _mvelValues = {};
 
@@ -220,9 +221,9 @@ class GlobalProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Map<String,dynamic> get completeException=>_completeException;
-  set completeException(Map<String,dynamic> value){
-    _completeException=value;
+  Map<String, dynamic> get completeException => _completeException;
+  set completeException(Map<String, dynamic> value) {
+    _completeException = value;
     notifyListeners();
   }
 
@@ -232,15 +233,15 @@ class GlobalProvider with ChangeNotifier {
   }
 
   //Functions
-  setCompleteExceptionByKey(String key,dynamic value){
-    completeException[key]=value;
+  setCompleteExceptionByKey(String key, dynamic value) {
+    completeException[key] = value;
     notifyListeners();
   }
-  getCompleteExceptionByKey(String key){
-    if(completeException.containsKey(key)){
+
+  getCompleteExceptionByKey(String key) {
+    if (completeException.containsKey(key)) {
       return completeException[key];
-    }
-    else{
+    } else {
       return [];
     }
   }
@@ -349,7 +350,7 @@ class GlobalProvider with ChangeNotifier {
       } else {
         commitId = head;
       }
-    } catch(e) {
+    } catch (e) {
       debugPrint("Failed fetching git info: $e");
     }
 
@@ -362,10 +363,12 @@ class GlobalProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  removeValidFromMap(String key,Uint8List? item, Map<String, dynamic> commonMap) {
-    if(commonMap[key].listofImages!=null && commonMap[key].listofImages.length>=1) {
+  removeValidFromMap(
+      String key, Uint8List? item, Map<String, dynamic> commonMap) {
+    if (commonMap[key].listofImages != null &&
+        commonMap[key].listofImages.length >= 1) {
       commonMap[key].listofImages.remove(item);
-    }else{
+    } else {
       commonMap.remove(key);
     }
     notifyListeners();
@@ -476,6 +479,7 @@ class GlobalProvider with ChangeNotifier {
   int _maxLanguageCount = 0;
   Map<String, bool> _mandatoryLanguageMap = {};
   List<DynamicFieldData?> _notificationLanguages = [];
+  List<BiometricCommentData> _biometricCommentDataList = [];
   Map<String, bool> _disabledLanguageMap = {};
 
   List<LanguageData?> get languageDataList => _languageDataList;
@@ -493,6 +497,32 @@ class GlobalProvider with ChangeNotifier {
 
   List<String> get exceptionAttributes => _exceptionAttributes;
 
+  List<BiometricCommentData> get biometricCommentDataList =>
+      _biometricCommentDataList;
+
+  setComment(String fieldId, String modality, String comment) {
+    if (_biometricCommentDataList.isEmpty) {
+      BiometricCommentData data = BiometricCommentData(
+          fieldId: fieldId, modality: modality, comment: comment);
+      _biometricCommentDataList.add(data);
+    } else {
+      bool present = false;
+      for (var biometricCommentData in _biometricCommentDataList) {
+        if (biometricCommentData.fieldId == fieldId &&
+            biometricCommentData.modality == modality) {
+          biometricCommentData.comment = comment;
+          present = true;
+          break;
+        }
+      }
+      if (present == false) {
+        BiometricCommentData data = BiometricCommentData(
+            fieldId: fieldId, modality: modality, comment: comment);
+        _biometricCommentDataList.add(data);
+      }
+    }
+  }
+
   initializeLanguageDataList() async {
     _languageDataList = await dynamicResponseService.fetchAllLanguages();
     await setLanguageConfigData();
@@ -502,7 +532,7 @@ class GlobalProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  set exceptionAttributes(List<String> value){
+  set exceptionAttributes(List<String> value) {
     _exceptionAttributes = value;
     notifyListeners();
   }
@@ -618,12 +648,12 @@ class GlobalProvider with ChangeNotifier {
     }
     List<String> languageList = [];
     _codeToLanguageMapper = {};
-    for(var element in _mandatoryLanguages) {
+    for (var element in _mandatoryLanguages) {
       languageList.add(element!);
       _codeToLanguageMapper[element] = element;
     }
     for (var element in _languageDataList) {
-      if(_codeToLanguageMapper[element!.code] == null) {
+      if (_codeToLanguageMapper[element!.code] == null) {
         languageList.add(element.code);
       }
       _codeToLanguageMapper[element.code] = element.name;
@@ -717,7 +747,8 @@ class GlobalProvider with ChangeNotifier {
     await networkService.saveScreenHeaderToGlobalParam(id, value);
   }
 
-  removeProofOfExceptionFieldFromMap(String key, Map<String, dynamic> commonMap) {
+  removeProofOfExceptionFieldFromMap(
+      String key, Map<String, dynamic> commonMap) {
     commonMap.remove(key);
   }
 }

@@ -13,6 +13,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:registration_client/model/biometric_attribute_data.dart';
+import 'package:registration_client/model/biometric_comment_data.dart';
 import 'package:registration_client/model/field.dart';
 import 'package:registration_client/model/process.dart';
 import 'package:registration_client/model/screen.dart';
@@ -423,7 +424,8 @@ class _NewProcessState extends State<NewProcess> with WidgetsBindingObserver {
             }
           }
         }
-        if (screen.fields!.elementAt(i)!.requiredOn != null && screen.fields!.elementAt(i)!.requiredOn!.isNotEmpty) {
+        if (screen.fields!.elementAt(i)!.requiredOn != null &&
+            screen.fields!.elementAt(i)!.requiredOn!.isNotEmpty) {
           bool required = await evaluateMVEL(
               jsonEncode(screen.fields!.elementAt(i)!.toJson()),
               screen.fields!.elementAt(i)!.requiredOn?[0]?.engine,
@@ -471,12 +473,28 @@ class _NewProcessState extends State<NewProcess> with WidgetsBindingObserver {
       return isValid;
     }
 
+    setBiometricComments() {
+      List<BiometricCommentData> biometricCommentDataList=context.read<GlobalProvider>().biometricCommentDataList;
+      if(biometricCommentDataList.isNotEmpty){
+        for (var data in biometricCommentDataList) {
+        BiometricsApi().setComment(data.fieldId,data.modality,data.comment);
+      }
+      }
+      
+    }
+
     continueButtonTap(BuildContext context, int size, newProcess) async {
       if (globalProvider.newProcessTabIndex < size) {
         bool customValidator =
             await customValidation(globalProvider.newProcessTabIndex);
         if (customValidator) {
           if (globalProvider.formKey.currentState!.validate()) {
+            if (newProcess.screens!
+                    .elementAt(globalProvider.newProcessTabIndex)!
+                    .name ==
+                "BiometricDetails") {
+              setBiometricComments();
+            }
             if (globalProvider.newProcessTabIndex ==
                 newProcess.screens!.length - 1) {
               registrationTaskProvider.setPreviewTemplate("");

@@ -14,6 +14,7 @@ class BiometricAttributeData {
   int noOfCapturesAllowed;
   double imageHeightTablet;
   double imageHeightMobile;
+  String? comment;
   BiometricAttributeData({
     required this.title,
     required this.viewTitle,
@@ -28,5 +29,6 @@ class BiometricAttributeData {
     required this.listOfBiometricsDto,
     required this.thresholdPercentage,
     required this.noOfCapturesAllowed,
+    this.comment,
   });
 }

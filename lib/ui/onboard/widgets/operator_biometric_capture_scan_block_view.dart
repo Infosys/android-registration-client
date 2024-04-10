@@ -12,6 +12,7 @@ import 'package:registration_client/pigeon/biometrics_pigeon.dart';
 // import 'package:registration_client/pigeon/biometrics_pigeon.dart';
 
 import 'package:registration_client/provider/biometric_capture_control_provider.dart';
+import 'package:registration_client/provider/global_provider.dart';
 import 'package:registration_client/provider/registration_task_provider.dart';
 import 'package:registration_client/utils/app_config.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -1807,6 +1808,10 @@ class _OperatorBiometricCaptureScanBlockViewState
                   ),
                   TextField(
                     maxLines: 10,
+                    controller: textFieldController,
+                    onChanged: (value) {
+                      biometricAttributeData.comment = value;
+                    },
                     decoration: InputDecoration(
                       fillColor: pureWhite,
                       hintText: AppLocalizations.of(context)!
@@ -1849,13 +1854,19 @@ class _OperatorBiometricCaptureScanBlockViewState
 
   late BiometricAttributeData biometricAttributeData;
   late BiometricCaptureControlProvider biometricCaptureControlProvider;
+  late TextEditingController textFieldController;
 
   @override
   Widget build(BuildContext context) {
     isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
+
     setInitialState();
     biometricCaptureControlProvider =
         Provider.of<BiometricCaptureControlProvider>(context, listen: false);
+    textFieldController = TextEditingController(
+        text: (biometricAttributeData.comment == null)
+            ? ''
+            : biometricAttributeData.comment);
     return SafeArea(
       child: Scaffold(
         bottomNavigationBar: Container(

@@ -383,6 +383,7 @@ public class BiometricsDetailsApi implements BiometricsPigeon.BiometricsApi {
         }
     }
 
+
     @Override
     public void extractImageValuesByAttempt(@NonNull String fieldId, @NonNull String modality, @NonNull Long attempt,
             @NonNull BiometricsPigeon.Result<List<byte[]>> result) {
@@ -495,6 +496,25 @@ public class BiometricsDetailsApi implements BiometricsPigeon.BiometricsApi {
             Log.e(TAG, e.getMessage());
         }
     }
+
+    @Override
+    public void setComment(@NonNull String fieldId, @NonNull String modality, @NonNull String comment, @NonNull BiometricsPigeon.Result<Long> result) {
+        try {
+            RegistrationDto registrationDto = registrationService.getRegistrationDto();
+            List<BiometricsDto> bestBiometricsDtoList=registrationDto.getBestBiometrics(fieldId,getModality(modality));
+            for (BiometricsDto biometricDto:
+                    bestBiometricsDtoList) {
+                System.out.println(biometricDto);
+                System.out.println(biometricDto.getModality()+"::::::::::::"+modality);
+                if(biometricDto.getModality().equals(modality)){
+                    biometricDto.setComment(comment);
+                }
+            }
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage());
+        }
+    }
+
 
     @Override
     public void startOperatorOnboarding(@NonNull BiometricsPigeon.Result<String> result) {

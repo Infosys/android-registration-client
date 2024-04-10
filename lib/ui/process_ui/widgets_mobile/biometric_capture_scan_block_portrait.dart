@@ -457,7 +457,8 @@ class _BiometricCaptureScanBlockPortraitState
                             color: secondaryColors.elementAt(18),
                           ),
                           child: Text(
-                            noOfTrue(biometricAttributeData.exceptions).toString(),
+                            noOfTrue(biometricAttributeData.exceptions)
+                                .toString(),
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyLarge
@@ -904,6 +905,12 @@ class _BiometricCaptureScanBlockPortraitState
                     height: 20,
                   ),
                   TextField(
+                    controller: textFieldController,
+                    onChanged: (value) {
+                      biometricAttributeData.comment = value;
+                      print(biometricAttributeData.title.replaceAll(" ",""));
+                      context.read<GlobalProvider>().setComment(widget.field.id!, biometricAttributeData.title.replaceAll(" ",""), value);
+                    },
                     maxLines: 10,
                     decoration: InputDecoration(
                       fillColor: pureWhite,
@@ -2398,12 +2405,17 @@ class _BiometricCaptureScanBlockPortraitState
 
   late BiometricAttributeData biometricAttributeData;
   late BiometricCaptureControlProvider biometricCaptureControlProvider;
+  late TextEditingController textFieldController;
   @override
   Widget build(BuildContext context) {
     isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
     setInitialState();
     biometricCaptureControlProvider =
         Provider.of<BiometricCaptureControlProvider>(context, listen: false);
+    textFieldController = TextEditingController(
+        text: (biometricAttributeData.comment == null)
+            ? ''
+            : biometricAttributeData.comment);
 
     return SafeArea(
       child: Scaffold(
