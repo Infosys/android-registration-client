@@ -378,161 +378,123 @@ class _NewProcessState extends State<NewProcess> with WidgetsBindingObserver {
       }
     }
 
+    biometricRequiredValidation(Field field) {
+      if (field.controlType == "biometrics") {
+        int count = returnBiometricListLength(field.bioAttributes, field.id!);
+        if (globalProvider.completeException[field.id!] != null) {
+          int length = globalProvider.completeException[field.id!].length;
+          count = count - length;
+        }
+
+        if (globalProvider.fieldInputValue[field.id!].length < count) {
+          return false;
+        }
+      }
+
+      return true;
+    }
+
+    biometricConditionalValidation(Field field) async {
+      bool valid = await BiometricsApi().conditionalBioAttributeValidation(
+          field.id!, field.conditionalBioAttributes!.first!.validationExpr!);
+      if (field.exceptionPhotoRequired == true) {
+        List<BiometricAttributeData> biometricAttributeDataList =
+            globalProvider.fieldInputValue[field.id!];
+        bool isExceptionPresent = false;
+        bool isExceptionAttributePresent = false;
+        for (var biometricAttributeData in biometricAttributeDataList) {
+          if (globalProvider.exceptionAttributes
+              .contains(biometricAttributeData.title)) {
+            isExceptionPresent = true;
+          }
+          if (biometricAttributeData.title == "Exception") {
+            isExceptionAttributePresent = true;
+          }
+        }
+        if (isExceptionPresent == true &&
+            isExceptionAttributePresent == false) {
+          return false;
+        }
+      }
+      if (!valid) {
+        return false;
+      }
+
+      return true;
+    }
+
     customValidation(int currentIndex) async {
       bool isValid = true;
       if (globalProvider.newProcessTabIndex < size) {
         Screen screen = newProcess.screens!.elementAt(currentIndex)!;
         for (int i = 0; i < screen.fields!.length; i++) {
-          if (screen.fields!.elementAt(i)!.inputRequired! &&
-              screen.fields!.elementAt(i)!.required!) {
-            if (!(globalProvider.fieldInputValue
-                    .containsKey(screen.fields!.elementAt(i)!.id)) &&
+          Field field = screen.fields!.elementAt(i)!;
+          if (field.inputRequired! && field.required!) {
+            if (!(globalProvider.fieldInputValue.containsKey(field.id)) &&
+                !(globalProvider.fieldInputValue.containsKey(field.subType)) &&
                 !(globalProvider.fieldInputValue
-                    .containsKey(screen.fields!.elementAt(i)!.subType)) &&
-                !(globalProvider.fieldInputValue.containsKey(
-                    "${screen.fields!.elementAt(i)!.group}${screen.fields!.elementAt(i)!.subType}"))) {
-              // log("field: ${screen.fields!.elementAt(i)!.group}${screen.fields!.elementAt(i)!.subType}");
-
-              // if (screen.fields!.elementAt(i)!.controlType == "fileupload") {
-              //   _showInSnackBar(appLocalizations.upload_document);
-              // }
-              isValid = false;
-
-              break;
+                    .containsKey("${field.group}${field.subType}"))) {
+              return false;
             }
-            if (screen.fields!.elementAt(i)!.conditionalBioAttributes != null &&
-                screen.fields!
-                    .elementAt(i)!
-                    .conditionalBioAttributes!
-                    .isNotEmpty) {
+            if (field.conditionalBioAttributes != null &&
+                field.conditionalBioAttributes!.isNotEmpty) {
               String response = await BiometricsApi().getAgeGroup();
-              if (!(response.compareTo(screen.fields!
-                      .elementAt(i)!
-                      .conditionalBioAttributes!
-                      .first!
-                      .ageGroup!) ==
+              if (!(response.compareTo(
+                      field.conditionalBioAttributes!.first!.ageGroup!) ==
                   0)) {
-                if (screen.fields!.elementAt(i)!.controlType == "biometrics") {
-                  int count = returnBiometricListLength(
-                      screen.fields!.elementAt(i)!.bioAttributes,
-                      screen.fields!.elementAt(i)!.id!);
-                  if (globalProvider.completeException[
-                          screen.fields!.elementAt(i)!.id!] !=
-                      null) {
-                    int length = globalProvider
-                        .completeException[screen.fields!.elementAt(i)!.id!]
-                        .length;
-                    count = count - length;
-                  }
+                bool valid = biometricRequiredValidation(field);
+                if (!valid) {
+                  return false;
+                }
+              }
 
-                  if (globalProvider
-                          .fieldInputValue[screen.fields!.elementAt(i)!.id!]
-                          .length <
-                      count) {
-                    isValid = false;
-
-                    break;
-                  }
+              if (response.compareTo(
+                      field.conditionalBioAttributes!.first!.ageGroup!) ==
+                  0) {
+                bool valid = await biometricConditionalValidation(field);
+                if (!valid) {
+                  return false;
                 }
               }
             }
           }
-          if (screen.fields!.elementAt(i)!.requiredOn != null &&
-              screen.fields!.elementAt(i)!.requiredOn!.isNotEmpty) {
+          if (field.requiredOn != null && field.requiredOn!.isNotEmpty) {
             bool visible = await evaluateMVELVisible(
-                jsonEncode(screen.fields!.elementAt(i)!.toJson()),
-                screen.fields!.elementAt(i)!.requiredOn?[0]?.engine,
-                screen.fields!.elementAt(i)!.requiredOn?[0]?.expr,
-                screen.fields!.elementAt(i)!);
+                jsonEncode(field.toJson()),
+                field.requiredOn?[0]?.engine,
+                field.requiredOn?[0]?.expr,
+                field);
             bool required = await evaluateMVELRequired(
-                jsonEncode(screen.fields!.elementAt(i)!.toJson()),
-                screen.fields!.elementAt(i)!.requiredOn?[0]?.engine,
-                screen.fields!.elementAt(i)!.requiredOn?[0]?.expr,
-                screen.fields!.elementAt(i)!);
+                jsonEncode(field.toJson()),
+                field.requiredOn?[0]?.engine,
+                field.requiredOn?[0]?.expr,
+                field);
             if (visible && required) {
-              if (screen.fields!.elementAt(i)!.inputRequired!) {
-                if (!(globalProvider.fieldInputValue
-                        .containsKey(screen.fields!.elementAt(i)!.id)) &&
+              if (field.inputRequired!) {
+                if (!(globalProvider.fieldInputValue.containsKey(field.id)) &&
                     !(globalProvider.fieldInputValue
-                        .containsKey(screen.fields!.elementAt(i)!.subType)) &&
-                    !(globalProvider.fieldInputValue.containsKey(
-                        "${screen.fields!.elementAt(i)!.group}${screen.fields!.elementAt(i)!.subType}"))) {
-                  isValid = false;
-
-                  break;
+                        .containsKey(field.subType)) &&
+                    !(globalProvider.fieldInputValue
+                        .containsKey("${field.group}${field.subType}"))) {
+                  return false;
                 }
-                if (screen.fields!.elementAt(i)!.conditionalBioAttributes != null &&
-                    screen.fields!
-                        .elementAt(i)!
-                        .conditionalBioAttributes!
-                        .isNotEmpty) {
+                if (field.conditionalBioAttributes != null &&
+                    field.conditionalBioAttributes!.isNotEmpty) {
                   String response = await BiometricsApi().getAgeGroup();
-                  if (!(response.compareTo(screen.fields!
-                      .elementAt(i)!
-                      .conditionalBioAttributes!
-                      .first!
-                      .ageGroup!) ==
+                  if (!(response.compareTo(
+                          field.conditionalBioAttributes!.first!.ageGroup!) ==
                       0)) {
-                    if (screen.fields!.elementAt(i)!.controlType == "biometrics") {
-                      int count = returnBiometricListLength(
-                          screen.fields!.elementAt(i)!.bioAttributes,
-                          screen.fields!.elementAt(i)!.id!);
-                      if (globalProvider.completeException[
-                      screen.fields!.elementAt(i)!.id!] !=
-                          null) {
-                        int length = globalProvider
-                            .completeException[screen.fields!.elementAt(i)!.id!]
-                            .length;
-                        count = count - length;
-                      }
-                      if (globalProvider
-                          .fieldInputValue[screen.fields!.elementAt(i)!.id!]
-                          .length <
-                          count) {
-                        isValid = false;
-
-                        break;
-                      }
+                    bool valid = biometricRequiredValidation(field);
+                    if (!valid) {
+                      return false;
                     }
                   }
-                  if (response.compareTo(screen.fields!
-                      .elementAt(i)!
-                      .conditionalBioAttributes!
-                      .first!
-                      .ageGroup!) ==
+                  if (response.compareTo(
+                          field.conditionalBioAttributes!.first!.ageGroup!) ==
                       0) {
-                    bool valid = await BiometricsApi()
-                        .conditionalBioAttributeValidation(
-                        screen.fields!.elementAt(i)!.id!,
-                        screen.fields!
-                            .elementAt(i)!
-                            .conditionalBioAttributes!
-                            .first!
-                            .validationExpr!);
-                    if (screen.fields!.elementAt(i)!.exceptionPhotoRequired == true) {
-                      List<BiometricAttributeData> biometricAttributeDataList =
-                      globalProvider
-                          .fieldInputValue[screen.fields!.elementAt(i)!.id!];
-                      bool isExceptionPresent = false;
-                      bool isExceptionAttributePresent = false;
-                      for (var biometricAttributeData in biometricAttributeDataList) {
-                        if (globalProvider.exceptionAttributes
-                            .contains(biometricAttributeData.title)) {
-                          isExceptionPresent = true;
-                        }
-                        if (biometricAttributeData.title == "Exception") {
-                          isExceptionAttributePresent = true;
-                        }
-                      }
-                      if (isExceptionPresent == true &&
-                          isExceptionAttributePresent == false) {
-                        isValid = false;
-                        break;
-                      }
-                    }
+                    bool valid = await biometricConditionalValidation(field);
                     if (!valid) {
-                      isValid = false;
-                      break;
+                      return false;
                     }
                   }
                 }
@@ -553,11 +515,21 @@ class _NewProcessState extends State<NewProcess> with WidgetsBindingObserver {
           if (globalProvider.formKey.currentState!.validate()) {
             if (globalProvider.newProcessTabIndex ==
                 newProcess.screens!.length - 1) {
-             templateTitleMap = {'demographicInfo': AppLocalizations.of(context)!.demographic_information ?? "Demographic Information", 'documents': AppLocalizations.of(context)!.documents ?? "Documents", 'bioMetrics': AppLocalizations.of(context)!.biometrics ?? "Biometrics"};
+              templateTitleMap = {
+                'demographicInfo':
+                    AppLocalizations.of(context)!.demographic_information ??
+                        "Demographic Information",
+                'documents':
+                    AppLocalizations.of(context)!.documents ?? "Documents",
+                'bioMetrics':
+                    AppLocalizations.of(context)!.biometrics ?? "Biometrics"
+              };
               registrationTaskProvider.setPreviewTemplate("");
               registrationTaskProvider.setAcknowledgementTemplate("");
-              await registrationTaskProvider.getPreviewTemplate(true,templateTitleMap!);
-              await registrationTaskProvider.getAcknowledgementTemplate(false,templateTitleMap!);
+              await registrationTaskProvider.getPreviewTemplate(
+                  true, templateTitleMap!);
+              await registrationTaskProvider.getAcknowledgementTemplate(
+                  false, templateTitleMap!);
             }
 
             globalProvider.newProcessTabIndex =
