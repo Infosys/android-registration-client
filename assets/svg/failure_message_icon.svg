@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="114" height="114" viewBox="0 0 114 114">
+  <g id="success_message_icon" transform="translate(-29.811 -29.311)">
+    <rect id="Rectangle_6846" data-name="Rectangle 6846" width="114" height="114" rx="57" transform="translate(29.811 29.311)" fill="rgba(157,32,32,0.08)"/>
+    <g id="success_icon" transform="translate(68.097 62.858)">
+      <g id="Group_57086" data-name="Group 57086">
+        <path id="gpp_maybe_FILL0_wght400_GRAD0_opsz48" d="M26.714,50.857a22.966,22.966,0,0,1-13.451-9.528A27.858,27.858,0,0,1,8,24.941V10.986L26.714,3.95l18.714,7.036V24.941a27.858,27.858,0,0,1-5.263,16.388A22.966,22.966,0,0,1,26.714,50.857Z" transform="translate(-8 -3.95)" fill="#d32d2d"/>
+        <path id="check_circle_FILL0_wght400_GRAD0_opsz48" d="M12.416,19.4,22.671,9.147,21,7.516,12.416,16.1,8.067,11.756,6.437,13.387ZM14.554,12.807Z" transform="translate(4.246 9.622)" fill="#fff"/>
+      </g>
+    </g>
+  </g>
+</svg>

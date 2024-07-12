@@ -562,6 +562,7 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
         horizontal: isMobile && !isMobileSize ? 30.w : 20.w,
         vertical: isMobile && !isMobileSize ? 30.h : 20.h,
       ),
+      margin: const EdgeInsets.only(bottom: 30),
       decoration: BoxDecoration(
         color: appWhite,
         border: Border.all(
