@@ -248,5 +248,33 @@
   "offline": "ऑफलाइन",
   "logout_success": "आप सफलता पूर्वक लॉगआउट कर चुके हैं!",
   "logout_failure": "कुछ गलती हो गई है, कृपया कुछ समय बाद पुनः प्रयास करें",
-  "go_to_home": "होम पर जाएं"
+  "go_to_home": "होम पर जाएं",
+  "biometrics_authenticate": "बायोमेट्रिक्स प्रमाणीकरण",
+  "biometrics_verified": "सफलतापूर्वक सत्यापित",
+  "proceed_to_dashboard": "डैशबोर्ड पर जाएं",
+  "no_biometric": "कोई बायोमेट्रिक मेल नहीं मिला",
+  "scan_retry": "कृपया स्कैनर को साफ करें या पुनः प्रयास करें।",
+  "retry_text": "पुन: प्रयास",
+  "login_using": "का उपयोग करके लॉगिन करें",
+  "select_login_method": "लॉगिन विधि का चयन करें",
+  "auth_biomteric_capture_success": "{chosenBiometric} कैप्चर सफल.",
+  "@auth_biomteric_capture_success": {
+    "description": "A message with a single parameter",
+    "placeholders": {
+      "chosenBiometric": {
+        "type": "String",
+        "example": "English"
+      }
+    }
+  },
+  "auth_biomteric_verification_success": "{chosenBiometric} प्रमाणीकरण सफलतापूर्वक हो गया है. आपको डैशबोर्ड पर ले जा रहा हूं.",
+  "@auth_biomteric_verification_success": {
+    "description": "A message with a single parameter",
+    "placeholders": {
+      "chosenBiometric": {
+        "type": "String",
+        "example": "English"
+      }
+    }
+  }
 }

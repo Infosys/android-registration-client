@@ -248,5 +248,33 @@
   "offline": "Offline",
   "logout_success": "You have been successfully logged out!",
   "logout_failure": "Something went wrong, please try again after some time",
-  "go_to_home": "Go To Home"
+  "go_to_home": "Go To Home",
+  "biometrics_authenticate": "AUTHENTICATE",
+  "biometrics_verified": "Successfully Verified",
+  "proceed_to_dashboard": "Proceed to dashboard",
+  "no_biometric": "No biometric match found",
+  "scan_retry": "Please clean the scanner or try again.",
+  "retry_text": "RETRY",
+  "login_using": "Login using",
+  "select_login_method": "Select login method",
+  "auth_biomteric_capture_success": "{chosenBiometric} capture successful.",
+  "@auth_biomteric_capture_success": {
+    "description": "A message with a single parameter",
+    "placeholders": {
+      "chosenBiometric": {
+        "type": "String",
+        "example": "English"
+      }
+    }
+  },
+  "auth_biomteric_verification_success": "{chosenBiometric} authentication is successfully done. Taking you to the Dashboard.",
+  "@auth_biomteric_verification_success": {
+    "description": "A message with a single parameter",
+    "placeholders": {
+      "chosenBiometric": {
+        "type": "String",
+        "example": "English"
+      }
+    }
+  }
 }

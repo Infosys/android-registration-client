@@ -10,26 +10,41 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+@class AuthResponse;
 
-/// The codec used by DemographicsApi.
-NSObject<FlutterMessageCodec> *DemographicsApiGetCodec(void);
-
-@protocol DemographicsApi
-- (void)addDemographicFieldFieldId:(NSString *)fieldId value:(NSString *)value completion:(void (^)(NSString *_Nullable, FlutterError *_Nullable))completion;
-- (void)getDemographicFieldFieldId:(NSString *)fieldId completion:(void (^)(NSString *_Nullable, FlutterError *_Nullable))completion;
-- (void)getHashValueBytes:(FlutterStandardTypedData *)bytes completion:(void (^)(NSString *_Nullable, FlutterError *_Nullable))completion;
-- (void)addSimpleTypeDemographicFieldFieldId:(NSString *)fieldId value:(NSString *)value language:(NSString *)language completion:(void (^)(FlutterError *_Nullable))completion;
-- (void)getSimpleTypeDemographicFieldFieldId:(NSString *)fieldId language:(NSString *)language completion:(void (^)(NSString *_Nullable, FlutterError *_Nullable))completion;
-- (void)setDateFieldFieldId:(NSString *)fieldId subType:(NSString *)subType day:(NSString *)day month:(NSString *)month year:(NSString *)year completion:(void (^)(FlutterError *_Nullable))completion;
-- (void)removeDemographicFieldFieldId:(NSString *)fieldId completion:(void (^)(FlutterError *_Nullable))completion;
-- (void)setConsentFieldConsentData:(NSString *)consentData completion:(void (^)(FlutterError *_Nullable))completion;
-- (void)addUpdatableFieldsFieldIds:(NSArray<NSString *> *)fieldIds completion:(void (^)(NSString *_Nullable, FlutterError *_Nullable))completion;
-- (void)addUpdatableFieldGroupFieldGroup:(NSString *)fieldGroup completion:(void (^)(NSString *_Nullable, FlutterError *_Nullable))completion;
-- (void)removeUpdatableFieldsFieldIds:(NSArray<NSString *> *)fieldIds completion:(void (^)(NSString *_Nullable, FlutterError *_Nullable))completion;
-- (void)removeUpdatableFieldGroupFieldGroup:(NSString *)fieldGroup completion:(void (^)(NSString *_Nullable, FlutterError *_Nullable))completion;
-- (void)changeUpdatableFieldGroupsWithCompletion:(void (^)(NSString *_Nullable, FlutterError *_Nullable))completion;
+@interface AuthResponse : NSObject
+/// `init` unavailable to enforce nonnull fields, see the `make` class method.
+- (instancetype)init NS_UNAVAILABLE;
++ (instancetype)makeWithResponse:(NSString *)response
+    userId:(NSString *)userId
+    username:(NSString *)username
+    userEmail:(NSString *)userEmail
+    isOfficer:(NSNumber *)isOfficer
+    isDefault:(NSNumber *)isDefault
+    isSupervisor:(NSNumber *)isSupervisor
+    isOperator:(NSNumber *)isOperator
+    errorCode:(nullable NSString *)errorCode;
+@property(nonatomic, copy) NSString * response;
+@property(nonatomic, copy) NSString * userId;
+@property(nonatomic, copy) NSString * username;
+@property(nonatomic, copy) NSString * userEmail;
+@property(nonatomic, strong) NSNumber * isOfficer;
+@property(nonatomic, strong) NSNumber * isDefault;
+@property(nonatomic, strong) NSNumber * isSupervisor;
+@property(nonatomic, strong) NSNumber * isOperator;
+@property(nonatomic, copy, nullable) NSString * errorCode;
 @end
 
-extern void DemographicsApiSetup(id<FlutterBinaryMessenger> binaryMessenger, NSObject<DemographicsApi> *_Nullable api);
+/// The codec used by AuthResponseApi.
+NSObject<FlutterMessageCodec> *AuthResponseApiGetCodec(void);
+
+@protocol AuthResponseApi
+- (void)loginUsername:(NSString *)username password:(NSString *)password isConnected:(NSNumber *)isConnected completion:(void (^)(AuthResponse *_Nullable, FlutterError *_Nullable))completion;
+- (void)loginUsingBiometricsUsername:(NSString *)username completion:(void (^)(AuthResponse *_Nullable, FlutterError *_Nullable))completion;
+- (void)logoutWithCompletion:(void (^)(NSString *_Nullable, FlutterError *_Nullable))completion;
+- (void)stopAlarmServiceWithCompletion:(void (^)(NSString *_Nullable, FlutterError *_Nullable))completion;
+@end
+
+extern void AuthResponseApiSetup(id<FlutterBinaryMessenger> binaryMessenger, NSObject<AuthResponseApi> *_Nullable api);
 
 NS_ASSUME_NONNULL_END

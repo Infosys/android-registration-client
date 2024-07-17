@@ -248,5 +248,33 @@
   "offline": "ಆಫ್ಲೈನ್",
   "logout_success": "ನೀವು ಯಶಸ್ವಿಯಾಗಿ ಲಾಗ್ ಔಟ್ ಆಗಿರುವಿರಿ!",
   "logout_failure": "ಏನೋ ತಪ್ಪಾಗಿದೆ, ದಯವಿಟ್ಟು ಸ್ವಲ್ಪ ಸಮಯದ ನಂತರ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ",
-  "go_to_home": "ಮನೆಗೆ ಹೋಗು"
+  "go_to_home": "ಮನೆಗೆ ಹೋಗು",
+  "biometrics_authenticate": "ಜೈವಮಿತಿ ದೃಢೀಕರಿಸಿ",
+  "biometrics_verified": "ಯಶಸ್ವಿಯಾಗಿ ದೃಢೀಕರಿಸಲಾಗಿದೆ",
+  "proceed_to_dashboard": "ಡ್ಯಾಶ್‌ಬೋರ್ಡ್‌ಗೆ ಮುಂದೆ ಹೋಗಿ",
+  "no_biometric": "ಯಾವುದೇ ಜೈವಮಿತಿ ಹೊಂದಿಕೆಯಾಗಿಲ್ಲ",
+  "scan_retry": "ಸ್ಕ್ಯಾನರ್ ಅನ್ನು ಸ್ವಚ್ಛಗೊಳಿಸಿ ಅಥವಾ ಮರುಪ್ರಯತ್ನಿಸಿ.",
+  "retry_text": "ಮರುಪ್ರಯತ್ನಿಸಿ",
+  "login_using": "ಬಳಸಿ ಲಾಗಿನ್ ಮಾಡಿ",
+  "select_login_method": "ಲಾಗಿನ್ ವಿಧಾನವನ್ನು ಆಯ್ಕೆಮಾಡಿ",
+  "auth_biomteric_capture_success": "{chosenBiometric} ಸೆರೆಹಿಡಿಯುವುದು ಯಶಸ್ವಿಯಾಗಿದೆ.",
+  "@auth_biomteric_capture_success": {
+    "description": "A message with a single parameter",
+    "placeholders": {
+      "chosenBiometric": {
+        "type": "String",
+        "example": "English"
+      }
+    }
+  },
+  "auth_biomteric_verification_success": "{chosenBiometric} ದೃಢೀಕರಣವನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಮಾಡಲಾಗುತ್ತದೆ. ನಿಮ್ಮನ್ನು ಡ್ಯಾಶ್‌ಬೋರ್ಡ್‌ಗೆ ಕರೆದೊಯ್ಯುತ್ತಿದೆ.",
+  "@auth_biomteric_verification_success": {
+    "description": "A message with a single parameter",
+    "placeholders": {
+      "chosenBiometric": {
+        "type": "String",
+        "example": "English"
+      }
+    }
+  }
 }

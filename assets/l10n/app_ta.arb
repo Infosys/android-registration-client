@@ -257,5 +257,33 @@
   "offline": "ஆஃப்லைனில்",
   "logout_success": "நீங்கள் வெற்றிகரமாக வெளியேறிவிட்டீர்கள்!",
   "logout_failure": "ஏதோ தவறாகிவிட்டது, சிறிது நேரம் கழித்து மீண்டும் முயற்சிக்கவும்",
-  "go_to_home": "வீட்டிற்கு போ"
+  "go_to_home": "வீட்டிற்கு போ",
+  "biometrics_authenticate": "உயிர்மெய் உறுதிப்படுத்தல்",
+  "biometrics_verified": "வெற்றிகரமாக உறுதிப்படுத்தப்பட்டது",
+  "proceed_to_dashboard": "டாஷ்போர்டுக்கு செல்லவும்",
+  "no_biometric": "உயிர்மெய் பொருத்தம் இல்லை",
+  "scan_retry": "ஸ்கேனர் சுத்தம் செய்து மீண்டும் முயற்சிக்கவும்.",
+  "retry_text": "மீண்டும் முயற்சிக்கவும்",
+  "login_using": "பயன்படுத்தி உள்நுழைக",
+  "select_login_method": "உள்நுழைவு முறையை தேர்ந்தெடுக்கவும்",
+  "auth_biomteric_capture_success": "{chosenBiometric} வெற்றிகரமான பிடிப்பு.",
+  "@auth_biomteric_capture_success": {
+    "description": "A message with a single parameter",
+    "placeholders": {
+      "chosenBiometric": {
+        "type": "String",
+        "example": "English"
+      }
+    }
+  },
+  "auth_biomteric_verification_success": "{chosenBiometric} அங்கீகாரம் வெற்றிகரமாக முடிந்தது. டாஷ்போர்டுக்கு அழைத்துச் செல்கிறேன்.",
+  "@auth_biomteric_verification_success": {
+    "description": "A message with a single parameter",
+    "placeholders": {
+      "chosenBiometric": {
+        "type": "String",
+        "example": "English"
+      }
+    }
+  }
 }

@@ -21,6 +21,8 @@ abstract class AuthService {
 
   Future<String> logout();
 
+  Future<AuthResponse> loginUsingBiometrics(String username);
+
   Future<String> stopAlarmService();
 
   factory AuthService() => getAuthServiceImpl();

@@ -248,5 +248,33 @@
   "offline": "Hors ligne",
   "logout_success": "Vous avez été déconnecté avec succès!",
   "logout_failure": "Quelque chose s'est mal passé, veuillez réessayer après un certain temps",
-  "go_to_home": "Aller à la maison"
+  "go_to_home": "Aller à la maison",
+  "biometrics_authenticate": "Authentifier par biométrie",
+  "biometrics_verified": "Vérifié avec succès",
+  "proceed_to_dashboard": "Accéder au tableau de bord",
+  "no_biometric": "Aucune correspondance biométrique trouvée",
+  "scan_retry": "Veuillez nettoyer le scanner ou réessayer.",
+  "retry_text": "RECOMMENCEZ",
+  "login_using": "Se connecter en utilisant",
+  "select_login_method": "Sélectionnez la méthode de connexion",
+  "auth_biomteric_capture_success": "{chosenBiometric} capture réussie.",
+  "@auth_biomteric_capture_success": {
+    "description": "A message with a single parameter",
+    "placeholders": {
+      "chosenBiometric": {
+        "type": "String",
+        "example": "English"
+      }
+    }
+  },
+  "auth_biomteric_verification_success": "{chosenBiometric} l'authentification est effectuée avec succès. Vous amène au tableau de bord.",
+  "@auth_biomteric_verification_success": {
+    "description": "A message with a single parameter",
+    "placeholders": {
+      "chosenBiometric": {
+        "type": "String",
+        "example": "English"
+      }
+    }
+  }
 }

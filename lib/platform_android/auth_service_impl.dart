@@ -47,8 +47,7 @@ class AuthServiceImpl implements AuthService {
       String username, String password) async {
     late PacketAuth packetAuth;
     try {
-      packetAuth =
-          await PacketAuthApi().authenticate(username, password);
+      packetAuth = await PacketAuthApi().authenticate(username, password);
     } on PlatformException {
       debugPrint('PacketAuthenticationApi call failed!');
     } catch (e) {
@@ -63,9 +62,9 @@ class AuthServiceImpl implements AuthService {
     late String logoutResponse;
     try {
       logoutResponse = await AuthResponseApi().logout();
-    }on PlatformException {
+    } on PlatformException {
       debugPrint('Logout Api call failed!');
-    }catch (e) {
+    } catch (e) {
       debugPrint(e.toString());
     }
 
@@ -73,19 +72,30 @@ class AuthServiceImpl implements AuthService {
   }
 
   @override
-  Future<String> stopAlarmService() async{
+  Future<String> stopAlarmService() async {
     late String stopAlarmServiceResponse;
     try {
       stopAlarmServiceResponse = await AuthResponseApi().stopAlarmService();
-    }on PlatformException {
+    } on PlatformException {
       debugPrint('stopAlarmService Api call failed!');
-    }catch (e) {
+    } catch (e) {
       debugPrint(e.toString());
     }
     return stopAlarmServiceResponse;
   }
 
-
+  @override
+  Future<AuthResponse> loginUsingBiometrics(String username) async {
+    late AuthResponse authResponse;
+    try {
+      authResponse = await AuthResponseApi().loginUsingBiometrics(username);
+    } on PlatformException {
+      debugPrint('AuthResponseApi call failed');
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+    return authResponse;
+  }
 }
 
 AuthService getAuthServiceImpl() => AuthServiceImpl();

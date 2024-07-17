@@ -248,5 +248,33 @@
   "offline": "غير متصل على الانترنت",
   "logout_success": "لقد تم تسجيل بنجاح!",
   "logout_failure": "حدث خطأ ما، يرجى المحاولة مرة أخرى بعد مرور بعض الوقت",
-  "go_to_home": "اذهب إلى المنزل"
+  "go_to_home": "اذهب إلى المنزل",
+  "biometrics_authenticate": "مصادقة القياسات الحيوية",
+  "biometrics_verified": "تم التحقق بنجاح",
+  "proceed_to_dashboard": "الانتقال إلى لوحة التحكم",
+  "no_biometric": "لم يتم العثور على تطابق للقياسات الحيوية",
+  "scan_retry": "يرجى تنظيف الماسح الضوئي أو المحاولة مرة أخرى.",
+  "retry_text": "إعادة المحاولة",
+  "login_using": "تسجيل الدخول باستخدام",
+  "select_login_method": "اختر طريقة تسجيل الدخول",
+  "auth_biomteric_capture_success": "{chosenBiometric} تم الالتقاط بنجاح.",
+  "@auth_biomteric_capture_success": {
+    "description": "A message with a single parameter",
+    "placeholders": {
+      "chosenBiometric": {
+        "type": "String",
+        "example": "English"
+      }
+    }
+  },
+  "auth_biomteric_verification_success": "{chosenBiometric} تتم المصادقة بنجاح. يأخذك إلى لوحة القيادة.",
+  "@auth_biomteric_verification_success": {
+    "description": "A message with a single parameter",
+    "placeholders": {
+      "chosenBiometric": {
+        "type": "String",
+        "example": "English"
+      }
+    }
+  }
 }

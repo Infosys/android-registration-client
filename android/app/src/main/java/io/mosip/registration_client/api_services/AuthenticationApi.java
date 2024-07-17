@@ -181,7 +181,6 @@ public class AuthenticationApi implements AuthResponsePigeon.AuthResponseApi {
             AuthResponsePigeon.AuthResponse authResponse = getAuthErrorResponse("REG_CRED_EXPIRED");
             result.success(authResponse);
         }
-
     }
 
     @Override
@@ -193,6 +192,35 @@ public class AuthenticationApi implements AuthResponsePigeon.AuthResponseApi {
         }
         doLogin(username, password, result);
         return;
+    }
+
+    @Override
+    public void loginUsingBiometrics(@NonNull String username, @NonNull AuthResponsePigeon.Result<AuthResponsePigeon.AuthResponse> result) {
+        if(!loginService.isPasswordPresent(username)) {
+            AuthResponsePigeon.AuthResponse authResponse = getAuthErrorResponse("REG_CRED_EXPIRED");
+            result.success(authResponse);
+            return;
+        }
+
+        try {
+            String token = loginService.saveUserAuthTokenOffline(username);
+            String preferredUsername = sharedPreferences.getString(PREFERRED_USERNAME, username);
+            String fullName = sharedPreferences.getString(USER_NAME, preferredUsername);
+            AuthResponsePigeon.AuthResponse authResponse = new AuthResponsePigeon.AuthResponse.Builder()
+                    .setResponse(token)
+                    .setUserId(username)
+                    .setUsername(fullName)
+                    .setUserEmail(sharedPreferences.getString(USER_EMAIL, ""))
+                    .setIsDefault(sharedPreferences.getBoolean(IS_DEFAULT, false))
+                    .setIsOfficer(sharedPreferences.getBoolean(IS_OFFICER, false))
+                    .setIsOperator(sharedPreferences.getBoolean(IS_OPERATOR, false))
+                    .setIsSupervisor(sharedPreferences.getBoolean(IS_SUPERVISOR, false))
+                    .build();
+            result.success(authResponse);
+        } catch (Exception ex) {
+            AuthResponsePigeon.AuthResponse authResponse = getAuthErrorResponse("REG_CRED_EXPIRED_BIOMETRICS");
+            result.success(authResponse);
+        }
     }
 
     @Override

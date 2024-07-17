@@ -414,6 +414,59 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
     });
   }
 
+  authenticateUsingBiomterics() async {
+    setState(() {
+      authProvider.setIsSyncing(true);
+    });
+    await globalProvider.getVersionNoApp();
+    String version = globalProvider.versionNoApp;
+    await globalProvider.saveVersionToGlobalParam(
+        "mosip.registration.server_version", version);
+    if (version.startsWith("1.1.5")) {
+      await _saveAllHeaders();
+    }
+    await authProvider.authenticateUsingBiometrics(username);
+
+    if (!authProvider.isLoggedIn) {
+      authProvider.setIsSyncing(false);
+      _showErrorInSnackbar();
+      return;
+    }
+
+    await syncProvider.getLastSyncTime();
+    await connectivityProvider.checkNetworkConnection();
+
+    if (!connectivityProvider.isConnected) {
+      if (!authProvider.isCenterActive) {
+        authProvider.setLoginError("REG_CENTER_INACTIVE");
+        authProvider.setIsLoggedIn(false);
+        authProvider.setIsSyncing(false);
+        _showErrorInSnackbar();
+        return;
+      }
+
+      if (!authProvider.isMachineActive) {
+        authProvider.setLoginError("REG_MACHINE_INACTIVE");
+        authProvider.setIsLoggedIn(false);
+        authProvider.setIsSyncing(false);
+        _showErrorInSnackbar();
+        return;
+      }
+    }
+
+    if (!authProvider.isCenterActive || !authProvider.isMachineActive) {
+      _showAlertDialog();
+      authProvider.setIsSyncing(false);
+      return;
+    }
+
+    authProvider.setIsSyncing(false);
+    _navigateToHomePage();
+    setState(() {
+      isLoggingIn = false;
+    });
+  }
+
   _showErrorInSnackbar() {
     String errorMsg = authProvider.loginError;
     String snackbarText = "";
@@ -621,6 +674,9 @@ class _LoginPageState extends State<LoginPage> with WidgetsBindingObserver {
                       username = '';
                       authProvider.setIsSyncing(false);
                     });
+                  },
+                  authenticateUsingBiometrics: () async {
+                    await authenticateUsingBiomterics();
                   },
                   onChanged: (v) {
                     setState(() {

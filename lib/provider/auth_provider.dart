@@ -55,7 +55,7 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  setIsSyncing(bool value){
+  setIsSyncing(bool value) {
     _isSyncing = value;
     notifyListeners();
   }
@@ -150,14 +150,14 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
   }
 
-    Future<String> logoutUser() async {
-      String logoutResponse = await auth.logout();
-      String alarmService = await auth.stopAlarmService();
-      debugPrint("Alarm Service+$alarmService");
-      clearUser();
-      notifyListeners();
-      return logoutResponse;
-    }
+  Future<String> logoutUser() async {
+    String logoutResponse = await auth.logout();
+    String alarmService = await auth.stopAlarmService();
+    debugPrint("Alarm Service+$alarmService");
+    clearUser();
+    notifyListeners();
+    return logoutResponse;
+  }
 
   validateUser(String username, String langCode) async {
     final user = await auth.validateUser(username, langCode);
@@ -194,11 +194,31 @@ class AuthProvider with ChangeNotifier {
     setIsLoggingIn(false);
     notifyListeners();
   }
-  
+
+  authenticateUsingBiometrics(String username) async {
+    final authResponse = await auth.loginUsingBiometrics(username);
+    setIsLoggingIn(true);
+    if (authResponse.errorCode != null) {
+      _loginError = authResponse.errorCode!;
+      _isLoggedIn = false;
+    } else {
+      _userId = authResponse.userId;
+      _username = authResponse.username;
+      _userEmail = authResponse.userEmail;
+      _isDefault = authResponse.isDefault;
+      _isOfficer = authResponse.isOfficer;
+      _isSupervisor = authResponse.isSupervisor;
+      _isOperator = authResponse.isOperator;
+      _isLoggedIn = true;
+    }
+    setIsLoggingIn(false);
+    notifyListeners();
+  }
+
   authenticatePacket(String username, String password) async {
     final packetAuth = await auth.packetAuthentication(username, password);
 
-    if(packetAuth.errorCode != null) {
+    if (packetAuth.errorCode != null) {
       _packetError = packetAuth.errorCode!;
       _isPacketAuthenticated = false;
     } else {

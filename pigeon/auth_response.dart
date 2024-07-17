@@ -20,7 +20,7 @@ class AuthResponse {
     required this.isDefault,
     required this.isSupervisor,
     required this.isOperator,
-    this.errorCode, 
+    this.errorCode,
   });
 }
 
@@ -28,6 +28,8 @@ class AuthResponse {
 abstract class AuthResponseApi {
   @async
   AuthResponse login(String username, String password, bool isConnected);
+  @async
+  AuthResponse loginUsingBiometrics(String username);
   @async
   String logout();
   @async
