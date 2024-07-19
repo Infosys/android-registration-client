@@ -170,6 +170,7 @@ void main() {
               isDisabled: false,
               isLoggingIn: false,
               isMobile: true,
+              authenticateUsingBiometrics: () async {},
             ),
           ),
         )),
@@ -197,7 +198,9 @@ void main() {
     await tester.pumpWidget(
       testableWidget(
         child: SizedWidget(
-          child: MachineKeys(onCloseComponent: () {  },),
+          child: MachineKeys(
+            onCloseComponent: () {},
+          ),
         ),
       ),
     );
