@@ -59,6 +59,7 @@ android {
 }
 
 dependencies {
+    implementation files('libs\\kernel-biometrics-api-1.2.1-SNAPSHOT.jar')
     def work_version = "2.7.1"
 
     implementation 'com.google.dagger:dagger:2.41'
