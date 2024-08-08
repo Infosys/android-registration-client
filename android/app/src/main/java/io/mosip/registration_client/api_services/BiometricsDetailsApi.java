@@ -527,10 +527,13 @@ public class BiometricsDetailsApi implements BiometricsPigeon.BiometricsApi {
             userOnboardService.onboardOperator(userOnboardService.getOperatorBiometrics(), () -> {
                 if(userOnboardService.getIsOnboardSuccess()) {
                     result.success("OK");
+                } else {
+                    result.success("");
                 }
             });
         }catch (Exception e){
             Log.e(TAG, e.getMessage());
+            result.success("");
         }
     }
 

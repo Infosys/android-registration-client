@@ -102,6 +102,7 @@ class RegistrationTaskProvider with ChangeNotifier {
 
   getListOfProcesses() async {
     List<String?> result = await processSpecService.getNewProcessSpec();
+    log("list of processes: $listOfProcesses");
     if (result.isEmpty) {
       _listOfProcesses = [];
     } else {
@@ -198,7 +199,7 @@ class RegistrationTaskProvider with ChangeNotifier {
   Future<List<GenericData?>> getLocationValues(
       String fieldName, String langCode, List<String> languages) async {
     return await dynamicResponseService.fetchLocationValues(
-        fieldName, langCode,languages);
+        fieldName, langCode, languages);
   }
 
   Future<List<String?>> getDocumentValues(
@@ -243,8 +244,9 @@ class RegistrationTaskProvider with ChangeNotifier {
     return await dashBoard.getPacketUploadedPendingDetails();
   }
 
-  void getApplicationUploadNumber() async{
-    List<String?> packets = await PacketServiceImpl().getAllRegistrationPacket();
+  void getApplicationUploadNumber() async {
+    List<String?> packets =
+        await PacketServiceImpl().getAllRegistrationPacket();
     log("Number of Packets: ${packets.length}");
     setNumberOfPackets(packets.length);
   }

@@ -192,23 +192,27 @@ class _OperatorBiometricsCaptureState
                   });
 
                   String isOperatorBiometricSaved = "";
-                  await BiometricsApi().saveOperatorBiometrics().timeout(
-                    Duration(seconds: 10),
-                    onTimeout: () {
-                      setState(() {
-                        isSavingBiometrics = false;
-                      });
-                      return "";
-                    },
-                  ).then((value) {
-                    isOperatorBiometricSaved = value;
-                  });
+                  isOperatorBiometricSaved =
+                      await BiometricsApi().saveOperatorBiometrics();
+                  // .timeout(
+                  //   Duration(seconds: 10),
+                  //   onTimeout: () {
+                  //     setState(() {
+                  //       isSavingBiometrics = false;
+                  //     });
+                  //     return "";
+                  //   },
+                  // ).then((value) {
+                  //   isOperatorBiometricSaved = value;
+                  // });
 
                   setState(() {
                     isSavingBiometrics = false;
                   });
                   if (isOperatorBiometricSaved != "") {
-                    await context.read<RegistrationTaskProvider>().getLastUpdatedTime();
+                    await context
+                        .read<RegistrationTaskProvider>()
+                        .getLastUpdatedTime();
                     Navigator.pop(context);
                     showDialog<String>(
                       context: context,
