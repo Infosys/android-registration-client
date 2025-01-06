@@ -188,10 +188,12 @@ public class RegistrationServiceImpl implements RegistrationService {
             throw new ClientCheckedException(context, R.string.err_004);
         }
 
-        if(RegistrationConstants.SELECTED_HANDLES != null){
-        if(this.registrationDto.getFlowType().equals("NEW")) {
-            this.registrationDto.getDemographics().put("selectedHandles", RegistrationConstants.SELECTED_HANDLES);
-        }
+        List<String> selectedHandles = this.globalParamRepository.getSelectedHandles();
+        if(selectedHandles != null) {
+            if (this.registrationDto.getFlowType().equals("NEW") ||
+                 this.registrationDto.getFlowType().equals("Update")) {
+                this.registrationDto.getDemographics().put("selectedHandles", selectedHandles);
+            }
         }
 
 //        try {
@@ -219,12 +221,12 @@ public class RegistrationServiceImpl implements RegistrationService {
                 document.setType(entry.getValue().getType());
                 document.setFormat(entry.getValue().getFormat());
                 document.setRefNumber(entry.getValue().getRefNumber());
-                document.setDocument(convertImageToPDF(entry.getValue().getContent()));
+                document.setDocument(("pdf".equalsIgnoreCase(entry.getValue().getFormat()))?combineByteArray(entry.getValue().getContent()):convertImageToPDF(entry.getValue().getContent()));
                 Log.i(TAG, entry.getKey() + " >> PDF document size :" + document.getDocument().length);
                 packetWriterService.setDocument(this.registrationDto.getRId(), entry.getKey(), document);
             });
 
-            if (serverVersion.startsWith("1.1.5")) {
+            if (serverVersion!=null && serverVersion.startsWith("1.1.5")) {
                 this.registrationDto.getBestBiometrics(individualBiometricsFieldId, Modality.EXCEPTION_PHOTO).forEach( b -> {
                     Document document = new Document();
                     document.setType("EOP");
@@ -302,6 +304,17 @@ public class RegistrationServiceImpl implements RegistrationService {
             }
         }
         return String.join(RegistrationConstants.COMMA, key);
+    }
+
+    private byte[] combineByteArray(List<byte[]> byteList) {
+        int totalLength = byteList.stream().mapToInt(byteArr -> byteArr.length).sum();
+        byte[] result = new byte[totalLength];
+        int currentPos = 0;
+        for (byte[] byteArr : byteList) {
+            System.arraycopy(byteArr, 0, result, currentPos, byteArr.length);
+            currentPos += byteArr.length;
+        }
+        return result;
     }
 
     private String getAdditionalInfo(Object fieldValue) {
